@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VALORANT - Game Details</title>
+    <!-- Sharp Gaming Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --valorant-red: #ff4655;
+            --bg-dark: #0f1923;
+            --card-bg: #1f2326;
+            --text-light: #ece8e1;
+            --accent-cyan: #36d5b0;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            /* Subtle grid background for a "Tactical" feel */
+            background-image: radial-gradient(rgba(255, 70, 85, 0.05) 1px, transparent 0);
+            background-size: 40px 40px;
+            color: var(--text-light);
+        }
+
+        header {
+            display: flex;
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 15px 5%;
+            background-color: var(--valorant-red); 
+            color: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        header h1 {
+            margin: 0;
+            letter-spacing: 4px;
+            font-weight: 700;
+        }
+
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border: 2px solid white;
+            padding: 8px 18px;
+            text-transform: uppercase;
+            transition: 0.3s;
+            clip-path: polygon(0 0, 100% 0, 100% 70%, 85% 100%, 0 100%);
+        }
+
+        .back-btn:hover {
+            background: white;
+            color: var(--valorant-red);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            padding: 40px;
+            position: relative;
+            border-left: 8px solid var(--valorant-red);
+            box-shadow: 20px 20px 0px rgba(0,0,0,0.3);
+        }
+
+        /* Red Corner Detail */
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0; right: 0;
+            width: 50px; height: 50px;
+            background: var(--valorant-red);
+            clip-path: polygon(100% 0, 0 0, 100% 100%);
+        }
+
+        .hero-section {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 40px;
+        }
+
+        .image-box img {
+            width: 100%;
+            border: 1px solid #383e44;
+            transition: 0.4s ease;
+            filter: saturate(0.8);
+        }
+
+        .image-box img:hover {
+            filter: saturate(1.2);
+            box-shadow: 0 0 30px rgba(255, 70, 85, 0.2);
+        }
+
+        .game-title {
+            color: var(--valorant-red);
+            font-size: 3.5rem;
+            margin: 0;
+            text-transform: uppercase;
+            line-height: 0.8;
+            font-weight: 700;
+        }
+
+        .tag-container { margin: 20px 0; }
+
+        .tag {
+            background: var(--accent-cyan);
+            color: var(--bg-dark);
+            padding: 4px 12px;
+            font-size: 0.85rem;
+            margin-right: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .description {
+            line-height: 1.6;
+            color: #bdc3c7;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .specs-table td {
+            padding: 15px;
+            border-bottom: 1px solid #383e44;
+        }
+
+        .specs-label {
+            font-weight: bold;
+            color: var(--valorant-red);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 35%;
+        }
+
+        .download-area {
+            text-align: center;
+            margin-top: 50px;
+            padding: 40px;
+            background: linear-gradient(45deg, #1a1e22, #2a2e33);
+            border: 1px solid #333;
+        }
+
+        .btn-download {
+            background-color: var(--valorant-red);
+            color: white;
+            padding: 20px 60px;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            /* Aggressive Valorant shape */
+            clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%);
+            display: inline-block;
+            transition: 0.3s;
+        }
+
+        .btn-download:hover {
+            background-color: var(--text-light);
+            color: var(--valorant-red);
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(255, 70, 85, 0.4);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--valorant-red); }
+
+        @media (max-width: 850px) {
+            .hero-section { grid-template-columns: 1fr; }
+            .game-title { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>VALORANT</h1>
+    <a href="Pr 2.html" class="back-btn">Exit to Store</a>
+</header>
+
+<div class="container">
+    <div class="hero-section">
+        <div class="image-box">
+            <img src="https://4kwallpapers.com/images/wallpapers/valorant-agent-omen-3840x2160-14510.jpeg" alt="Valorant Omen Agent">
+        </div>
+        <div class="info-box">
+            <h2 class="game-title">Defy The Limits</h2>
+            <div class="tag-container">
+                <span class="tag">Tactical</span>
+                <span class="tag">5v5 Shooter</span>
+                <span class="tag">Character-Based</span>
+            </div>
+            <p class="description">
+                Blend your style and experience on a global, competitive stage. You have 13 rounds to attack and defend your side using sharp gunplay and tactical abilities. 
+                With one life per round, you'll need to think faster than your opponent if you want to survive.
+            </p>
+
+            <table class="specs-table">
+                <tr>
+                    <td class="specs-label">Developer</td>
+                    <td>Riot Games</td>
+                </tr>
+                <tr>
+                    <td class="specs-label">Storage</td>
+                    <td>~30 GB</td>
+                </tr>
+                <tr>
+                    <td class="specs-label">Processor</td>
+                    <td>Intel Core i3-4150 / Ryzen 3 1200</td>
+                </tr>
+                <tr>
+                    <td class="specs-label">Graphics</td>
+                    <td>GeForce GT 730 / Radeon R7 240</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="download-area">
+        <a href="https://playvalorant.com/en-us/download/" target="_blank" class="btn-download">Play Free Now</a>
+    </div>
+</div>
+
+</body>
+</html>
