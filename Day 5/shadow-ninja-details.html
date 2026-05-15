@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shadow Ninja - Game Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --purple: #8e44ad; --bg: #0a0a0a; --card: #111; --border: #222; --text: #fff; --dim: #aaa; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 0 5%; height: 64px; background: linear-gradient(90deg, #000, #2d1b4e); border-bottom: 2px solid var(--purple); }
+        .logo { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--purple); letter-spacing: 2px; text-decoration: none; }
+        .back-btn { color: white; text-decoration: none; font-weight: 700; background: var(--purple); padding: 8px 20px; text-transform: uppercase; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%); transition: 0.3s; font-size: 0.85rem; }
+        .back-btn:hover { filter: brightness(1.3); box-shadow: 0 0 15px var(--purple); }
+        .container { max-width: 1000px; margin: 50px auto; padding: 0 20px; }
+        .card { background: var(--card); border: 1px solid var(--border); padding: 40px; position: relative; }
+        .card::after { content: ""; position: absolute; top: 0; right: 0; width: 150px; height: 4px; background: var(--purple); transform: rotate(-45deg) translate(40px, -40px); box-shadow: 0 0 15px var(--purple); }
+        .hero-section { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; }
+        .image-box img { width: 100%; border: 1px solid #333; filter: grayscale(30%) contrast(1.2); transition: 0.5s; }
+        .image-box img:hover { filter: none; transform: scale(1.02); }
+        .game-title { font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; line-height: 0.9; margin-bottom: 16px; }
+        .tag { background: rgba(142,68,173,0.1); border: 1px solid var(--purple); color: var(--purple); padding: 4px 12px; font-size: 0.8rem; margin-right: 8px; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
+        .description { color: var(--dim); font-size: 1rem; line-height: 1.6; border-left: 3px solid var(--purple); padding-left: 20px; margin: 16px 0; }
+        .specs-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .specs-table td { padding: 12px 0; border-bottom: 1px solid var(--border); color: var(--dim); font-size: 0.95rem; }
+        .specs-label { color: var(--purple); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; width: 40%; }
+        .download-area { text-align: center; margin-top: 40px; padding: 40px; background: linear-gradient(transparent, rgba(142,68,173,0.05)); border: 1px solid var(--border); border-top: none; }
+        .price-big { font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 800; color: var(--purple); margin-bottom: 16px; }
+        .btn-buy { background: var(--purple); color: white; padding: 18px 50px; text-decoration: none; font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 800; text-transform: uppercase; display: inline-block; clip-path: polygon(0 20%, 95% 0, 100% 80%, 5% 100%); transition: 0.3s; }
+        .btn-buy:hover { transform: scale(1.1) rotate(-1deg); background: #a55cca; box-shadow: 0 0 30px rgba(142,68,173,0.6); }
+        @media (max-width: 700px) { .hero-section { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<header>
+    <a href="Home.html" class="logo">🎮 GameStore</a>
+    <a href="Home.html" class="back-btn">← Return to Store</a>
+</header>
+<div class="container">
+    <div class="card">
+        <div class="hero-section">
+            <div class="image-box"><img src="https://images.wallpapersden.com/image/download/ninja-shadow-dark_bGZmbm6UmZqaraWkpJRmbmdlrWZlbWU.jpg" alt="Shadow Ninja"></div>
+            <div>
+                <h2 class="game-title">Shadow Ninja</h2>
+                <div>
+                    <span class="tag">Stealth</span>
+                    <span class="tag">Action</span>
+                    <span class="tag">Single Player</span>
+                </div>
+                <p class="description">Become the ultimate weapon. Master the art of the shadow, utilize ancient gadgets, and navigate through heavily guarded fortresses. Every move counts.</p>
+                <table class="specs-table">
+                    <tr><td class="specs-label">Genre</td><td>Action / Parkour</td></tr>
+                    <tr><td class="specs-label">Platforms</td><td>PC, PS5, Xbox Series X</td></tr>
+                    <tr><td class="specs-label">Graphics</td><td>Ray-Tracing Supported</td></tr>
+                    <tr><td class="specs-label">Developer</td><td>Shadow Realm Studios</td></tr>
+                    <tr><td class="specs-label">Storage</td><td>~4 GB</td></tr>
+                </table>
+            </div>
+        </div>
+        <div class="download-area">
+            <div class="price-big">$29.99</div>
+            <a href="payment.html?game=Shadow+Ninja&price=29.99" class="btn-buy">🛒 Buy Now &amp; Download</a>
+            <p style="color:#555;font-size:0.8rem;margin-top:14px;">🔒 Secure payment · Instant digital delivery</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

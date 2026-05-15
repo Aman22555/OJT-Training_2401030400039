@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VALORANT - Game Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --red: #ff4655; --bg: #0f1923; --card: #1f2326; --border: #383e44; --text: #ece8e1; --cyan: #36d5b0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); background-image: radial-gradient(rgba(255,70,85,0.04) 1px, transparent 0); background-size: 40px 40px; }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 0 5%; height: 64px; background: var(--red); }
+        .logo { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 800; color: white; letter-spacing: 4px; text-decoration: none; }
+        .back-btn { color: white; text-decoration: none; font-weight: 700; border: 2px solid white; padding: 8px 18px; text-transform: uppercase; clip-path: polygon(0 0, 100% 0, 100% 70%, 85% 100%, 0 100%); transition: 0.3s; font-size: 0.85rem; }
+        .back-btn:hover { background: white; color: var(--red); }
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        .card { background: var(--card); border-left: 8px solid var(--red); padding: 40px; position: relative; }
+        .card::before { content: ""; position: absolute; top: 0; right: 0; width: 50px; height: 50px; background: var(--red); clip-path: polygon(100% 0, 0 0, 100% 100%); }
+        .hero-section { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; }
+        .image-box img { width: 100%; border: 1px solid var(--border); }
+        .game-title { color: var(--red); font-family: 'Barlow Condensed', sans-serif; font-size: 3.2rem; font-weight: 800; text-transform: uppercase; line-height: 0.9; margin-bottom: 16px; }
+        .tag { background: var(--cyan); color: var(--bg); padding: 4px 12px; font-size: 0.8rem; margin-right: 8px; font-weight: 700; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
+        .description { color: #bdc3c7; font-size: 1rem; line-height: 1.7; margin: 16px 0; }
+        .specs-table { width: 100%; border-collapse: collapse; }
+        .specs-table td { padding: 14px; border-bottom: 1px solid var(--border); color: #bdc3c7; font-size: 0.95rem; }
+        .specs-label { color: var(--red); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; width: 35%; }
+        .download-area { text-align: center; margin-top: 40px; padding: 40px; background: linear-gradient(45deg, #1a1e22, #2a2e33); border: 1px solid var(--border); }
+        .price-big { font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 800; color: var(--red); margin-bottom: 16px; }
+        .btn-download { background: var(--red); color: white; padding: 18px 60px; text-decoration: none; font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 800; text-transform: uppercase; clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%); display: inline-block; transition: 0.3s; }
+        .btn-download:hover { background: var(--text); color: var(--red); transform: scale(1.05); }
+        @media (max-width: 800px) { .hero-section { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<header>
+    <a href="Home.html" class="logo">GAMESTORE</a>
+    <a href="Home.html" class="back-btn">← Exit to Store</a>
+</header>
+<div class="container">
+    <div class="card">
+        <div class="hero-section">
+            <div class="image-box"><img src="https://4kwallpapers.com/images/wallpapers/valorant-agent-omen-3840x2160-14510.jpeg" alt="Valorant"></div>
+            <div>
+                <h2 class="game-title">VALORANT</h2>
+                <div>
+                    <span class="tag">Tactical</span>
+                    <span class="tag">5v5 Shooter</span>
+                    <span class="tag">Character-Based</span>
+                </div>
+                <p class="description">Blend your style and experience on a global, competitive stage. 13 rounds to attack and defend. Sharp gunplay, tactical abilities. One life per round — think faster or die.</p>
+                <table class="specs-table">
+                    <tr><td class="specs-label">Developer</td><td>Riot Games</td></tr>
+                    <tr><td class="specs-label">Storage</td><td>~30 GB</td></tr>
+                    <tr><td class="specs-label">Processor</td><td>Intel i3-4150 / Ryzen 3 1200</td></tr>
+                    <tr><td class="specs-label">Graphics</td><td>GeForce GT 730 / Radeon R7 240</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="download-area">
+        <div class="price-big">$60.00</div>
+        <a href="payment.html?game=VALORANT&price=60.00" class="btn-download">🛒 Buy Now &amp; Download</a>
+        <p style="color:#666;font-size:0.8rem;margin-top:14px;">🔒 Secure payment · Instant digital delivery</p>
+    </div>
+</div>
+</body>
+</html>

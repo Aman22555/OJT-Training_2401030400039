@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS2 - Game Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --accent: #de9b35; --bg: #0f1214; --card: #1a1d20; --border: #2a2d32; --text: #fff; --dim: #cbd5e0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 0 5%; height: 64px; background: #0a0c0e; border-bottom: 2px solid var(--accent); }
+        .logo { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--accent); letter-spacing: 2px; text-decoration: none; }
+        .back-btn { color: white; text-decoration: none; font-weight: 700; background: var(--accent); padding: 8px 20px; text-transform: uppercase; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%); transition: 0.3s; font-size: 0.85rem; }
+        .back-btn:hover { filter: brightness(1.2); }
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; background: var(--card); border: 1px solid var(--border); border-radius: 4px; }
+        .hero-section { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; padding: 40px; margin-bottom: 0; }
+        .image-box img { width: 100%; border: 1px solid #444; }
+        .game-title { color: var(--accent); font-family: 'Barlow Condensed', sans-serif; font-size: 3.2rem; font-weight: 800; text-transform: uppercase; line-height: 0.9; margin-bottom: 16px; }
+        .tag { background: #2a2a2a; color: var(--accent); padding: 4px 12px; font-size: 0.8rem; margin-right: 8px; border: 1px solid #444; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
+        .description { line-height: 1.7; color: var(--dim); font-size: 1rem; margin: 16px 0; }
+        .specs-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .specs-table td { padding: 12px; border-bottom: 1px solid #2a2a2a; font-size: 0.95rem; color: var(--dim); }
+        .specs-label { color: var(--accent); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; width: 40%; }
+        .download-area { text-align: center; padding: 40px; background: #0f1214; border-top: 1px solid var(--border); }
+        .price-big { font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 800; color: var(--accent); margin-bottom: 16px; }
+        .btn-steam { background: var(--accent); color: #000; padding: 18px 60px; text-decoration: none; font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 800; text-transform: uppercase; clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%); display: inline-block; transition: 0.3s; }
+        .btn-steam:hover { background: #fff; transform: translateY(-3px); }
+        @media (max-width: 800px) { .hero-section { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<header>
+    <a href="Home.html" class="logo">🎮 GameStore</a>
+    <a href="Home.html" class="back-btn">← Return to Base</a>
+</header>
+<div class="container">
+    <div class="hero-section">
+        <div class="image-box"><img src="https://wallpapercave.com/wp/wp12803694.png" alt="CS2"></div>
+        <div>
+            <h2 class="game-title">Counter-Strike 2</h2>
+            <div>
+                <span class="tag">FPS</span>
+                <span class="tag">Competitive</span>
+                <span class="tag">Tactical</span>
+            </div>
+            <p class="description">Counter-Strike 2 is the largest technical leap forward in Counter-Strike's history, built on the Source 2 engine with realistic smoke grenades, overhauled maps, and sub-tick updates.</p>
+            <table class="specs-table">
+                <tr><td class="specs-label">Developer</td><td>Valve Corporation</td></tr>
+                <tr><td class="specs-label">Engine</td><td>Source 2</td></tr>
+                <tr><td class="specs-label">Storage</td><td>85 GB available space</td></tr>
+                <tr><td class="specs-label">Graphics</td><td>GTX 1060 / Radeon RX 580</td></tr>
+                <tr><td class="specs-label">OS</td><td>Windows 10/11 64-bit</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="download-area">
+        <div class="price-big">$79.99</div>
+        <a href="payment.html?game=CS2&price=79.99" class="btn-steam">🛒 Buy Now &amp; Download</a>
+        <p style="color:#666;font-size:0.8rem;margin-top:14px;">🔒 Secure payment · Instant digital delivery</p>
+    </div>
+</div>
+</body>
+</html>
