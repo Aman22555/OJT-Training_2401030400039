@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGMI - Game Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --accent: #d57454; --bg: #0a0c0e; --card: #12151a; --border: #1e2228; --text: #e8e0d6; --dim: #7a8090; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); }
+        header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 5%; height: 64px; background: #0d0f12; border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 10;
+        }
+        .logo { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--accent); letter-spacing: 2px; text-decoration: none; }
+        .back-btn { color: var(--dim); text-decoration: none; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; transition: color 0.2s; }
+        .back-btn:hover { color: var(--accent); }
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .hero-section { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+        .hero-section img { width: 100%; border-radius: 8px; border: 1px solid var(--border); }
+        .game-title { font-family: 'Barlow Condensed', sans-serif; color: var(--accent); font-size: 2.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 12px; }
+        .tag { background: rgba(213,116,84,0.1); border: 1px solid rgba(213,116,84,0.3); color: var(--accent); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-right: 8px; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
+        .description { color: var(--dim); line-height: 1.7; font-size: 1rem; margin: 16px 0; }
+        .specs-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .specs-table td { padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+        .specs-label { color: var(--accent); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; width: 40%; letter-spacing: 1px; }
+        .download-area { text-align: center; margin-top: 40px; padding: 40px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
+        .price-big { font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 800; color: var(--accent); margin-bottom: 16px; }
+        .btn-download {
+            background: var(--accent); color: white; padding: 16px 50px; text-decoration: none;
+            font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 2px; border-radius: 4px;
+            display: inline-block; transition: background 0.2s, transform 0.1s;
+        }
+        .btn-download:hover { background: #bf5f40; transform: translateY(-2px); }
+        @media (max-width: 700px) { .hero-section { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<header>
+    <a href="Home.html" class="logo">🎮 GameStore</a>
+    <a href="Home.html" class="back-btn">← Back to Store</a>
+</header>
+<div class="container">
+    <div class="hero-section">
+        <img src="https://i.ytimg.com/vi/-ErnVg5aDag/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLB2s6Mg9edxIvXk0j_CFGvN79HmWA" alt="BGMI Cover">
+        <div>
+            <h2 class="game-title">Battlegrounds Mobile India</h2>
+            <div>
+                <span class="tag">Action</span>
+                <span class="tag">Multiplayer</span>
+                <span class="tag">Battle Royale</span>
+            </div>
+            <p class="description">BGMI is a premier battle royale game where multiple players employ strategies to fight and be the last man standing. Experience diverse maps, intense gunplay, and constant updates in this mobile-optimized masterpiece.</p>
+            <table class="specs-table">
+                <tr><td class="specs-label">Publisher</td><td>Krafton</td></tr>
+                <tr><td class="specs-label">Release Date</td><td>July 2, 2021</td></tr>
+                <tr><td class="specs-label">Min. RAM</td><td>8 GB (16 GB Recommended)</td></tr>
+                <tr><td class="specs-label">OS</td><td>Windows 10/11</td></tr>
+                <tr><td class="specs-label">Storage</td><td>~8 GB</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="download-area">
+        <div class="price-big">₹4999.99</div>
+        <a href="payment.html?game=BGMI&price=4999.99" class="btn-download">🛒 Buy Now &amp; Download</a>
+        <p style="color:var(--dim);font-size:0.8rem;margin-top:14px;">🔒 Secure payment · Instant digital delivery</p>
+    </div>
+</div>
+</body>
+</html>

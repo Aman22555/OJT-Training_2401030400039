@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameStore - Account</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --accent: #d57454; --accent-dark: #bf5f40; --bg: #0a0c0e; --card: #12151a; --border: #1e2228; --text: #e8e0d6; --dim: #7a8090; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .auth-container { background: var(--card); width: 100%; max-width: 420px; padding: 40px; border-radius: 8px; border-top: 3px solid var(--accent); border: 1px solid var(--border); border-top: 3px solid var(--accent); }
+        .brand { text-align: center; margin-bottom: 28px; }
+        .brand a { font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--accent); letter-spacing: 2px; text-decoration: none; }
+        .tabs { display: flex; justify-content: center; margin-bottom: 28px; border-bottom: 1px solid var(--border); }
+        .tab-btn { background: none; border: none; color: var(--dim); font-size: 1rem; font-weight: 700; font-family: 'Rajdhani', sans-serif; cursor: pointer; margin: 0 20px; padding-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; border-bottom: 2px solid transparent; }
+        .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--dim); }
+        input[type=text], input[type=email], input[type=password], input[type=number], input[type=tel] { width: 100%; padding: 11px 14px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+        input:focus { border-color: var(--accent); }
+        .btn-submit { width: 100%; padding: 13px; background: var(--accent); border: none; border-radius: 4px; color: white; font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: background 0.2s; margin-top: 8px; }
+        .btn-submit:hover { background: var(--accent-dark); }
+        .divider { text-align: center; margin: 20px 0; color: var(--dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 12px; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .social-btns { display: flex; flex-direction: column; gap: 10px; }
+        .social-btn { display: flex; align-items: center; justify-content: center; padding: 10px; border-radius: 4px; text-decoration: none; font-weight: 700; font-size: 0.9rem; font-family: 'Rajdhani', sans-serif; transition: 0.2s; gap: 10px; border: 1px solid var(--border); }
+        .google-btn { background: white; color: #333; }
+        .google-btn:hover { background: #f1f1f1; }
+        .fb-btn { background: #1877F2; color: white; border-color: #1877F2; }
+        .fb-btn:hover { background: #166fe5; }
+        .social-icon { width: 18px; height: 18px; }
+        .footer-text { text-align: center; margin-top: 18px; font-size: 0.8rem; color: var(--dim); }
+        .footer-text a { color: var(--accent); text-decoration: none; }
+        .back-home { display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--dim); text-decoration: none; font-size: 0.8rem; margin-top: 18px; transition: color 0.2s; text-transform: uppercase; letter-spacing: 1px; }
+        .back-home:hover { color: var(--accent); }
+        #signup-form { display: none; }
+        .category-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .cat-pill { cursor: pointer; background: var(--bg); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; color: var(--dim); font-family: 'Rajdhani', sans-serif; font-weight: 600; text-transform: uppercase; transition: all 0.2s; }
+        .cat-pill:hover { border-color: var(--accent); }
+        .cat-pill input { display: none; }
+        .cat-pill.checked { background: rgba(213,116,84,0.1); border-color: var(--accent); color: var(--accent); }
+    </style>
+</head>
+<body>
+<div class="auth-container">
+    <div class="brand"><a href="Home.html">🎮 GameStore</a></div>
+    <div class="tabs">
+        <button id="login-tab" class="tab-btn active" onclick="showForm('login')">Login</button>
+        <button id="signup-tab" class="tab-btn" onclick="showForm('signup')">Sign Up</button>
+    </div>
+
+    <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+            <label>Email or Username</label>
+            <input type="text" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-submit">Sign In</button>
+        <div class="divider">Or continue with</div>
+        <div class="social-btns">
+            <a href="#" class="social-btn google-btn">
+                <img src="https://www.svgrepo.com/show/355037/google.svg" class="social-icon" alt="Google"> Login with Google
+            </a>
+            <a href="#" class="social-btn fb-btn">
+                <img src="https://www.svgrepo.com/show/448224/facebook.svg" class="social-icon" alt="FB"> Login with Facebook
+            </a>
+        </div>
+        <div class="footer-text"><a href="#">Forgot password?</a></div>
+        <a href="Home.html" class="back-home">← Back to Store</a>
+    </form>
+
+    <form id="signup-form" onsubmit="handleSignup(event)">
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" placeholder="Aman Vishwakarma" required>
+        </div>
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" placeholder="amanvishwakarma@example.com" required>
+        </div>
+        <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="tel" placeholder="+91 98765 43210" required>
+        </div>
+        <div class="form-group">
+            <label>Create Password</label>
+            <input type="password" placeholder="••••••••" required>
+        </div>
+        <div class="form-group">
+            <label>Choose Your Interests</label>
+            <div class="category-pills">
+                <label class="cat-pill" onclick="this.classList.toggle('checked')"><input type="checkbox" value="battle-royale"><span>Battle Royale</span></label>
+                <label class="cat-pill" onclick="this.classList.toggle('checked')"><input type="checkbox" value="puzzle"><span>Puzzle</span></label>
+                <label class="cat-pill" onclick="this.classList.toggle('checked')"><input type="checkbox" value="shooter"><span>Shooter</span></label>
+                <label class="cat-pill" onclick="this.classList.toggle('checked')"><input type="checkbox" value="action"><span>Action</span></label>
+                <label class="cat-pill" onclick="this.classList.toggle('checked')"><input type="checkbox" value="stealth"><span>Stealth</span></label>
+            </div>
+        </div>
+        <button type="submit" class="btn-submit">Create Account</button>
+        <div class="divider">Or continue with</div>
+        <div class="social-btns">
+            <a href="#" class="social-btn google-btn">
+                <img src="https://www.svgrepo.com/show/355037/google.svg" class="social-icon" alt="Google"> Sign up with Google
+            </a>
+            <a href="#" class="social-btn fb-btn">
+                <img src="https://www.svgrepo.com/show/448224/facebook.svg" class="social-icon" alt="FB"> Sign up with Facebook
+            </a>
+        </div>
+        <a href="Home.html" class="back-home">← Back to Store</a>
+    </form>
+</div>
+<script>
+    function showForm(type) {
+        document.getElementById('login-form').style.display = type === 'login' ? 'block' : 'none';
+        document.getElementById('signup-form').style.display = type === 'signup' ? 'block' : 'none';
+        document.getElementById('login-tab').classList.toggle('active', type === 'login');
+        document.getElementById('signup-tab').classList.toggle('active', type === 'signup');
+    }
+    function handleLogin(e) {
+        e.preventDefault();
+        window.location.href = 'Home.html';
+    }
+    function handleSignup(e) {
+        e.preventDefault();
+        alert('✅ Account created! Welcome to GameStore!');
+        window.location.href = 'Home.html';
+    }
+</script>
+</body>
+</html>

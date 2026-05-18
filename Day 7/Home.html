@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameStore - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #d57454;
+            --accent-dark: #090807;
+            --bg: #0a0c0e;
+            --card: #12151a;
+            --border: #1e2228;
+            --text: #e8e0d6;
+            --dim: #7a8090;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            display: grid;
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            height: 64px;
+            background: #0d0f12;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            margin-bottom: 0;
+            padding-left: 0;
+        }
+        nav ul li a {
+            color: var(--dim);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.2s;
+        }
+        nav ul li a:hover { color: var(--accent); }
+        .header-right { display: flex; align-items: center; gap: 16px; }
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text);
+            padding: 7px 14px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9rem;
+            width: 180px;
+        }
+        .search-box input::placeholder { color: var(--dim); }
+        .search-box button {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 7px 14px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        .login-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 22px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .login-btn:hover { background: var(--accent-dark); color: white; }
+
+        .slider-wrap { position: relative; max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .slider {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            scrollbar-width: none;
+        }
+        .slider::-webkit-scrollbar { display: none; }
+        .slide {
+            min-width: 100%;
+            height: 400px;
+            scroll-snap-align: start;
+            position: relative;
+            cursor: pointer;
+        }
+        .slide img { width: 100%; height: 100%; object-fit: cover; }
+        .slide::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.6) 0%, transparent 60%);
+        }
+        .slide-label {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            z-index: 2;
+        }
+        .slide-label h3 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+        .slide-label .price-tag {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 4px 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-top: 8px;
+        }
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--border);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .dot.active { background: var(--accent); }
+
+        .section-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text);
+            margin-bottom: 24px;
+            padding-left: 14px;
+            border-left: 3px solid var(--accent);
+        }
+         
+        .game-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .game-card:hover { transform: translateY(-4px); border-color: var(--accent); color: inherit; }
+        .game-card img { width: 100%; height: 160px; object-fit: cover; }
+        .card-body { padding: 14px; flex-grow: 1; }
+        .card-body h3 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+        .card-body .genre { font-size: 0.8rem; color: var(--dim); text-transform: uppercase; }
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            border-top: 1px solid var(--border);
+            background: #0d0f12;
+        }
+        .card-price { font-weight: 700; color: var(--accent); font-size: 1rem; }
+
+        .game-table {
+            margin-bottom: 0;
+            background: var(--card);
+            color: var(--dim);
+        }
+
+        .game-table thead { 
+            background: hsl(220, 13%, 9%); 
+            border-bottom: 1px solid var(--border); 
+        }
+
+        .game-table th {
+            padding: 14px 16px !important;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent) !important;
+            border-bottom: none !important;
+        }
+
+        .game-table td {
+            padding: 14px 16px !important;
+            font-size: 0.95rem;
+            color: var(--dim);
+            border-bottom: 1px solid var(--border) !important;
+            vertical-align: middle;
+        }
+
+        .game-table tbody tr {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .game-table tbody tr:hover { 
+            background: #181c22 !important; 
+            border-color: var(--accent) !important;
+        }
+        .game-table tbody tr:hover td { 
+            color: var(--text); 
+        }
+        .game-link {
+            color: var(--accent);
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .game-link:hover { color: rgb(231, 204, 72); }
+        .buy-btn {
+            background: var(--accent);
+            color: white !important;
+            border: none;
+            padding: 6px 16px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.2s;
+        }
+        .buy-btn:hover { background: var(--accent-dark); }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--dim);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        @media (max-width: 900px) {
+            nav { display: none; }
+        }
+    </style>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<header>
+    <div class="logo">🎮 GameStore</div>
+    <nav>
+        <ul>
+            <li><a href="Home.html">Home</a></li>
+            <li><a href="bgmi-details.html">Battle Royale</a></li>
+            <li><a href="cs2-details.html">PC Games</a></li>
+            <li><a href="shadow-ninja-details.html">Puzzle</a></li>
+        </ul>
+    </nav>
+    <div class="header-right">
+        <div class="search-box">
+            <input type="text" placeholder="Search games...">
+            <button>Go</button>
+        </div>
+        <a href="login.html" class="login-btn">Login</a>
+    </div>
+</header>
+
+<div class="slider-wrap">
+    <div class="slider" id="slider">
+        <div class="slide" onclick="location.href='bgmi-details.html'">
+            <img src="https://i.ytimg.com/vi/-ErnVg5aDag/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLB2s6Mg9edxIvXk0j_CFGvN79HmWA" alt="BGMI">
+            <div class="slide-label">
+                <h3>BGMI</h3>
+                <div class="price-tag">₹4,999.99</div>
+            </div>
+        </div>
+        <div class="slide" onclick="location.href='valorant-details.html'">
+            <img src="https://wallpapers.com/images/hd/4k-hd-valorant-1m8v8h6l10gnss81.jpg" alt="Valorant">
+            <div class="slide-label">
+                <h3>VALORANT</h3>
+                <div class="price-tag">₹5,999.99</div>
+            </div>
+        </div>
+        <div class="slide" onclick="location.href='cs2-details.html'">
+            <img src="https://wallpapercave.com/wp/wp12803694.png" alt="CS2">
+            <div class="slide-label">
+                <h3>Counter-Strike 2</h3>
+                <div class="price-tag">₹7,999.99</div>
+            </div>
+        </div>
+    </div>
+    <div class="slider-dots">
+        <div class="dot active" onclick="goSlide(0)"></div>
+        <div class="dot" onclick="goSlide(1)"></div>
+        <div class="dot" onclick="goSlide(2)"></div>
+    </div>
+</div>
+
+<div class="container my-5" style="max-width: 1200px;">
+    <div class="section-title">Featured Games</div>
+    <div class="row g-3">
+        <div class="col-12 col-sm-6 col-lg-3">
+            <a href="bgmi-details.html" class="game-card">
+                <img src="https://i.ytimg.com/vi/-ErnVg5aDag/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLB2s6Mg9edxIvXk0j_CFGvN79HmWA" alt="BGMI">
+                <div class="card-body">
+                    <h3>BGMI</h3>
+                    <div class="genre">Battle Royale · Mobile</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-price">₹4,999.99</span>
+                    <span class="buy-btn">Buy Now</span>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <a href="valorant-details.html" class="game-card">
+                <img src="https://wallpapers.com/images/hd/4k-hd-valorant-1m8v8h6l10gnss81.jpg" alt="Valorant">
+                <div class="card-body">
+                    <h3>Valorant</h3>
+                    <div class="genre">Tactical Shooter · PC</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-price">₹5,999.99</span>
+                    <span class="buy-btn">Buy Now</span>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <a href="cs2-details.html" class="game-card">
+                <img src="https://wallpapercave.com/wp/wp12803694.png" alt="CS2">
+                <div class="card-body">
+                    <h3>Counter-Strike 2</h3>
+                    <div class="genre">FPS · PC</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-price">₹7,999.99</span>
+                    <span class="buy-btn">Buy Now</span>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <a href="shadow-ninja-details.html" class="game-card">
+                <img src="https://images.wallpapersden.com/image/download/ninja-shadow-dark_bGZmbm6UmZqaraWkpJRmbmdlrWZlbWU.jpg" alt="Shadow Ninja">
+                <div class="card-body">
+                    <h3>Shadow Ninja</h3>
+                    <div class="genre">Action / Parkour · PC</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-price">₹2,999.99</span>
+                    <span class="buy-btn">Buy Now</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5 d-flex flex-column" style="max-width: 1200px;">
+    <div class="section-title">All Games</div>
+    <div class="table-responsive flex-grow-1" style="border: 1px solid var(--border); border-radius: 6px;">
+        <table class="table game-table align-middle text-start mb-0">
+            <thead>
+                <tr>
+                    <th>Game Title</th>
+                    <th>Genre</th>
+                    <th>Platform</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr onclick="location.href='bgmi-details.html'">
+                    <td><a href="bgmi-details.html" class="game-link">BGMI</a></td>
+                    <td>Battle Royale</td>
+                    <td>Mobile / PC (8GB)</td>
+                    <td style="color:var(--accent);font-weight:700;">₹4,999.99</td>
+                    <td><a href="payment.html?game=BGMI&price=4999.99" class="buy-btn" onclick="event.stopPropagation()">Buy</a></td>
+                </tr>
+                <tr onclick="location.href='valorant-details.html'">
+                    <td><a href="valorant-details.html" class="game-link">VALORANT</a></td>
+                    <td>Tactical Shooter</td>
+                    <td>PC (16GB)</td>
+                    <td style="color:var(--accent);font-weight:700;">₹5,999.99</td>
+                    <td><a href="payment.html?game=VALORANT&price=5999.99" class="buy-btn" onclick="event.stopPropagation()">Buy</a></td>
+                </tr>
+                <tr onclick="location.href='cs2-details.html'">
+                    <td><a href="cs2-details.html" class="game-link">Counter-Strike 2</a></td>
+                    <td>FPS</td>
+                    <td>PC (8GB)</td>
+                    <td style="color:var(--accent);font-weight:700;">₹7,999.99</td>
+                    <td><a href="payment.html?game=CS2&price=7999.99" class="buy-btn" onclick="event.stopPropagation()">Buy</a></td>
+                </tr>
+                <tr onclick="location.href='shadow-ninja-details.html'">
+                    <td><a href="shadow-ninja-details.html" class="game-link">Shadow Ninja</a></td>
+                    <td>Action / Parkour</td>
+                    <td>PC (4GB)</td>
+                    <td style="color:var(--accent);font-weight:700;">₹2,999.99</td>
+                    <td><a href="payment.html?game=Shadow+Ninja&price=2999.99" class="buy-btn" onclick="event.stopPropagation()">Buy</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<footer>© 2025 GameStore. All rights reserved. · All prices in USD.</footer>
+
+<script>
+    const slider = document.getElementById('slider');
+    const dots = document.querySelectorAll('.dot');
+    function goSlide(i) {
+        slider.scrollTo({ left: slider.offsetWidth * i, behavior: 'smooth' });
+        dots.forEach(d => d.classList.remove('active'));
+        dots[i].classList.add('active');
+    }
+    let cur = 0;
+    setInterval(() => { cur = (cur + 1) % 3; goSlide(cur); }, 4000);
+</script>
+</body>
+</html>

@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameStore - Checkout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #d57454;
+            --accent-dark: #bf5f40;
+            --bg: #0a0c0e;
+            --card: #12151a;
+            --border: #1e2228;
+            --text: #e8e0d6;
+            --dim: #7a8090;
+            --success: #2ecc71;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            height: 64px;
+            background: #0d0f12;
+            border-bottom: 1px solid var(--border);
+        }
+        .logo {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-decoration: none;
+        }
+        .back-btn {
+            color: var(--dim);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.2s;
+        }
+        .back-btn:hover { color: var(--accent); }
+
+        /* STEPS BAR */
+        .steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0;
+            padding: 24px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+        }
+        .step-circle {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--dim);
+            transition: all 0.3s;
+        }
+        .step.active .step-circle { background: var(--accent); color: white; }
+        .step.done .step-circle { background: var(--success); color: white; }
+        .step-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--dim); }
+        .step.active .step-label { color: var(--accent); }
+        .step-line { flex: 1; height: 2px; background: var(--border); margin-bottom: 16px; }
+
+        /* LAYOUT */
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto 40px;
+            padding: 0 20px;
+        }
+
+        /* PANELS */
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .panel-header {
+            padding: 16px 24px;
+            background: #0d0f12;
+            border-bottom: 1px solid var(--border);
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+        }
+        .panel-body { padding: 24px; }
+
+        /* FORM */
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--dim);
+            margin-bottom: 8px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            padding: 11px 14px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+        .form-group select option { background: var(--card); }
+
+        /* PAYMENT METHODS */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .pay-method {
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            padding: 14px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg);
+        }
+        .pay-method:hover { border-color: var(--dim); }
+        .pay-method.selected { border-color: var(--accent); background: rgba(213,116,84,0.08); }
+        .pay-method .icon { font-size: 1.5rem; margin-bottom: 4px; }
+        .pay-method .name { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--dim); }
+        .pay-method.selected .name { color: var(--accent); }
+
+        /* CARD INPUT VISUAL */
+        .card-visual {
+            background: linear-gradient(135deg, #1a1d22, #252830);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .card-visual::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 140px; height: 140px;
+            background: radial-gradient(circle, rgba(213,116,84,0.15), transparent 70%);
+            border-radius: 50%;
+        }
+        .card-chip { font-size: 1.4rem; margin-bottom: 12px; opacity: 0.8; }
+        .card-number-display {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 3px;
+            color: var(--text);
+            margin-bottom: 14px;
+        }
+        .card-meta { display: flex; justify-content: space-between; }
+        .card-meta-item label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--dim);
+            display: block;
+            margin-bottom: 2px;
+        }
+        .card-meta-item span {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .card-network { position: absolute; top: 22px; right: 22px; font-size: 1.8rem; }
+
+        /* UPI SECTION */
+        .upi-section, .wallet-section { display: none; }
+        .upi-section.active, .wallet-section.active { display: block; }
+
+        .upi-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .upi-option {
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            padding: 14px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--dim);
+        }
+        .upi-option:hover { border-color: var(--dim); }
+        .upi-option.selected { border-color: var(--accent); color: var(--accent); background: rgba(213,116,84,0.08); }
+        .upi-option .upi-icon { font-size: 1.6rem; display: block; margin-bottom: 4px; }
+
+        /* ORDER SUMMARY */
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+        .order-item img { width: 70px; height: 50px; object-fit: cover; border-radius: 4px; }
+        .order-item-info h4 { font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+        .order-item-info span { font-size: 0.8rem; color: var(--dim); }
+        .order-price-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--dim);
+            margin-bottom: 8px;
+        }
+        .order-price-row.total {
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+            margin-top: 4px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .order-price-row.total span:last-child { color: var(--accent); font-size: 1.2rem; }
+
+        .promo-row { display: flex; gap: 8px; margin-bottom: 16px; }
+        .promo-row input {
+            flex: 1;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            padding: 9px 12px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .promo-row input:focus { border-color: var(--accent); }
+        .promo-btn {
+            background: var(--border);
+            color: var(--dim);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 9px 16px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .promo-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+        /* PAY BUTTON */
+        .pay-button {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 16px;
+        }
+        .pay-button:hover { background: var(--accent-dark); transform: translateY(-1px); }
+        .pay-button:active { transform: translateY(0); }
+
+        .secure-note {
+            text-align: center;
+            color: var(--dim);
+            font-size: 0.75rem;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* SUCCESS OVERLAY */
+        .success-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        .success-overlay.show { display: flex; }
+        .success-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 50px 40px;
+            text-align: center;
+            max-width: 440px;
+            animation: popIn 0.4s ease;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .success-icon { font-size: 4rem; margin-bottom: 16px; }
+        .success-box h2 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--success);
+        }
+        .success-box p { color: var(--dim); font-size: 1rem; line-height: 1.5; margin-bottom: 24px; }
+        .success-box .order-id { 
+            background: var(--bg); border: 1px solid var(--border);
+            padding: 10px 20px; border-radius: 4px;
+            font-family: monospace; font-size: 0.9rem; color: var(--accent);
+            margin-bottom: 24px; display: inline-block;
+        }
+        .success-actions { display: flex; gap: 12px; justify-content: center; }
+        .btn-outline {
+            color: var(--dim); text-decoration: none;
+            border: 1px solid var(--border); padding: 10px 22px;
+            font-family: 'Rajdhani', sans-serif; font-weight: 700;
+            font-size: 0.85rem; text-transform: uppercase; border-radius: 4px;
+            transition: 0.2s; cursor: pointer; background: none;
+        }
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-solid {
+            background: var(--accent); color: white; text-decoration: none;
+            padding: 10px 22px; font-family: 'Rajdhani', sans-serif;
+            font-weight: 700; font-size: 0.85rem; text-transform: uppercase;
+            border-radius: 4px; transition: 0.2s; border: none; cursor: pointer;
+        }
+        .btn-solid:hover { background: var(--accent-dark); }
+
+        @media (max-width: 768px) {
+            .checkout-layout { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .payment-methods { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="Home.html" class="logo">🎮 GameStore</a>
+    <a href="javascript:history.back()" class="back-btn">← Back to Game</a>
+</header>
+
+<div class="steps">
+    <div class="step active" id="step1">
+        <div class="step-circle">1</div>
+        <div class="step-label">Details</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step2">
+        <div class="step-circle">2</div>
+        <div class="step-label">Payment</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step3">
+        <div class="step-circle">3</div>
+        <div class="step-label">Confirm</div>
+    </div>
+</div>
+
+<div class="checkout-layout">
+
+    <div>
+        <div class="panel" style="margin-bottom:20px;">
+            <div class="panel-header">Account Details</div>
+            <div class="panel-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" placeholder="Aman" id="fname">
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" placeholder="Vishwakarma" id="lname">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="amanvishwakarma@example.com" id="email">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" placeholder="+91 98765 43210" id="phone">
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">Payment Method</div>
+            <div class="panel-body">
+                <div class="payment-methods">
+                    <div class="pay-method selected" onclick="selectMethod('card', this)">
+                        <div class="icon">💳</div>
+                        <div class="name">Card</div>
+                    </div>
+                    <div class="pay-method" onclick="selectMethod('upi', this)">
+                        <div class="icon">📱</div>
+                        <div class="name">UPI</div>
+                    </div>
+                    <div class="pay-method" onclick="selectMethod('wallet', this)">
+                        <div class="icon">👝</div>
+                        <div class="name">Wallet</div>
+                    </div>
+                </div>
+
+                <div id="card-section">
+                    <div class="card-visual">
+                        <div class="card-chip">▬</div>
+                        <div class="card-number-display" id="card-display">•••• •••• •••• ••••</div>
+                        <div class="card-meta">
+                            <div class="card-meta-item">
+                                <label>Card Holder</label>
+                                <span id="holder-display">YOUR NAME</span>
+                            </div>
+                            <div class="card-meta-item">
+                                <label>Expires</label>
+                                <span id="expiry-display">MM/YY</span>
+                            </div>
+                        </div>
+                        <div class="card-network">💳</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Card Number</label>
+                        <input type="text" placeholder="1234 5678 9012 3456" id="card-num" maxlength="19" oninput="formatCard(this)">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Expiry Date</label>
+                            <input type="text" placeholder="MM/YY" id="expiry" maxlength="5" oninput="formatExpiry(this)">
+                        </div>
+                        <div class="form-group">
+                            <label>CVV</label>
+                            <input type="password" placeholder="•••" maxlength="3">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Name on Card</label>
+                        <input type="text" placeholder="AMAN VISHWAKARMA" id="card-name" oninput="updateHolder(this)">
+                    </div>
+                </div>
+
+                <div id="upi-section" class="upi-section">
+                    <div class="upi-options">
+                        <div class="upi-option" onclick="selectUPI(this)">
+                            <span class="upi-icon">🇬</span>GPay
+                        </div>
+                        <div class="upi-option" onclick="selectUPI(this)">
+                            <span class="upi-icon">🅿</span>PhonePe
+                        </div>
+                        <div class="upi-option" onclick="selectUPI(this)">
+                            <span class="upi-icon">💰</span>Paytm
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>UPI ID</label>
+                        <input type="text" placeholder="yourname@upi">
+                    </div>
+                </div>
+
+                <div id="wallet-section" class="wallet-section">
+                    <div class="upi-options">
+                        <div class="upi-option" onclick="selectUPI(this)">
+                            <span class="upi-icon">💙</span>Paytm
+                        </div>
+                        <div class="upi-option" onclick="selectUPI(this)">
+                            <span class="upi-icon">🟣</span>Amazon Pay
+                        </div>
+                        <div class="upi-option" onclick="selectUPI(this)">
+                            <span class="upi-icon">🟢</span>Mobikwik
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Wallet Phone Number</label>
+                        <input type="tel" placeholder="+91 98765 43210">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="panel">
+            <div class="panel-header">Order Summary</div>
+            <div class="panel-body">
+                <div class="order-item" id="order-item">
+                    <img id="order-img" src="https://wallpapercave.com/wp/wp9427708.jpg" alt="Game">
+                    <div class="order-item-info">
+                        <h4 id="order-game">BGMI</h4>
+                        <span>Digital Download · 1x</span>
+                    </div>
+                </div>
+
+                <div class="promo-row">
+                    <input type="text" placeholder="Promo code" id="promo-code">
+                    <button class="promo-btn" onclick="applyPromo()">Apply</button>
+                </div>
+
+                <div class="order-price-row">
+                    <span>Subtotal</span>
+                    <span id="subtotal">₹4,798.50</span>
+                </div>
+                <div class="order-price-row" id="discount-row" style="display:none; color:var(--success);">
+                    <span>Discount (10%)</span>
+                    <span id="discount-val">-₹479.85</span>
+                    </div>
+                    <div class="order-price-row">
+                    <span>Tax (18% GST)</span>
+                    <span id="tax-val">₹863.73</span>
+                </div>
+                <div class="order-price-row total">
+                    <span>Total</span>
+                    <span id="total-val">₹5,662.23</span>
+                </div>
+
+                <button class="pay-button" onclick="processPayment()">
+                    🔒 Pay Now
+                </button>
+            </div>
+        </div>
+        <div class="panel" style="margin-top:16px;">
+            <div class="panel-body" style="padding:16px 24px;">
+                <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--dim);margin-bottom:10px;">Accepted Payments</div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <span style="background:var(--bg);border:1px solid var(--border);padding:6px 12px;border-radius:4px;font-size:0.8rem;font-weight:700;">VISA</span>
+                    <span style="background:var(--bg);border:1px solid var(--border);padding:6px 12px;border-radius:4px;font-size:0.8rem;font-weight:700;">Mastercard</span>
+                    <span style="background:var(--bg);border:1px solid var(--border);padding:6px 12px;border-radius:4px;font-size:0.8rem;font-weight:700;">RuPay</span>
+                    <span style="background:var(--bg);border:1px solid var(--border);padding:6px 12px;border-radius:4px;font-size:0.8rem;font-weight:700;">UPI</span>
+                    <span style="background:var(--bg);border:1px solid var(--border);padding:6px 12px;border-radius:4px;font-size:0.8rem;font-weight:700;">GPay</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="success-overlay" id="success-overlay">
+    <div class="success-box">
+        <div class="success-icon">🎮</div>
+        <h2>Payment Successful!</h2>
+        <p>Your purchase of <strong id="success-game">BGMI</strong> was completed successfully. Check your email for the download link.</p>
+        <div class="order-id" id="order-id">ORDER #GS-000000</div>
+        <div class="success-actions">
+            <button class="btn-outline" onclick="location.href='Home.html'">Back to Store</button>
+            <button class="btn-solid" onclick="downloadGame()">Download Game ↓</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const gameName = params.get('game') || 'BGMI';
+    const gamePrice = parseFloat(params.get('price') || '50.00');
+
+    const gameImages = {
+        'BGMI': 'https://wallpapercave.com/wp/wp9427708.jpg',
+        'VALORANT': 'https://4kwallpapers.com/images/wallpapers/valorant-agent-omen-3840x2160-14510.jpeg',
+        'CS2': 'https://wallpapercave.com/wp/wp12803694.png',
+        'Shadow Ninja': 'https://images.wallpapersden.com/image/download/ninja-shadow-dark_bGZmbm6UmZqaraWkpJRmbmdlrWZlbWU.jpg',
+    };
+
+    document.getElementById('order-game').textContent = gameName;
+    document.getElementById('order-img').src = gameImages[gameName] || gameImages['BGMI'];
+
+    let discountApplied = false;
+    function calcPrices(basePrice, discount) {
+        const discounted = discount ? basePrice * 0.9 : basePrice;
+        const tax = discounted * 0.18;
+        return { discounted, tax, total: discounted + tax };
+    }
+
+    function renderPrices() {
+        const { discounted, tax, total } = calcPrices(gamePrice, discountApplied);
+        document.getElementById('subtotal').textContent = `₹${gamePrice.toFixed(2)}`;
+        document.getElementById('tax-val').textContent = `₹${tax.toFixed(2)}`;
+        document.getElementById('total-val').textContent = `₹${total.toFixed(2)}`;
+        if (discountApplied) {
+            document.getElementById('discount-row').style.display = 'flex';
+            document.getElementById('discount-val').textContent = `-₹${(gamePrice * 0.1).toFixed(2)}`;
+        }
+    }
+    renderPrices();
+
+    function applyPromo() {
+        const code = document.getElementById('promo-code').value.trim().toUpperCase();
+        if (code === 'GAME10' && !discountApplied) {
+            discountApplied = true;
+            renderPrices();
+            alert('✅ Promo code applied! 10% discount.');
+        } else if (discountApplied) {
+            alert('Promo already applied.');
+        } else {
+            alert('❌ Invalid promo code. Try GAME10');
+        }
+    }
+
+    function selectMethod(method, el) {
+        document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('card-section').style.display = 'none';
+        document.getElementById('upi-section').className = 'upi-section';
+        document.getElementById('wallet-section').className = 'wallet-section';
+        if (method === 'card') document.getElementById('card-section').style.display = 'block';
+        else if (method === 'upi') document.getElementById('upi-section').className = 'upi-section active';
+        else if (method === 'wallet') document.getElementById('wallet-section').className = 'wallet-section active';
+    }
+
+    function selectUPI(el) {
+        el.closest('.upi-options').querySelectorAll('.upi-option').forEach(u => u.classList.remove('selected'));
+        el.classList.add('selected');
+    }
+
+    function formatCard(input) {
+        let v = input.value.replace(/\D/g, '').substring(0, 16);
+        input.value = v.replace(/(.{4})/g, '$1 ').trim();
+        const masked = v.padEnd(16, '•').replace(/(.{4})/g, '$1 ').trim();
+        document.getElementById('card-display').textContent = masked;
+    }
+    function formatExpiry(input) {
+        let v = input.value.replace(/\D/g, '');
+        if (v.length >= 2) v = v.slice(0,2) + '/' + v.slice(2);
+        input.value = v;
+        document.getElementById('expiry-display').textContent = v || 'MM/YY';
+    }
+    function updateHolder(input) {
+        document.getElementById('holder-display').textContent = input.value.toUpperCase() || 'YOUR NAME';
+    }
+    function setStep(n) {
+        document.querySelectorAll('.step').forEach((s, i) => {
+            s.classList.remove('active', 'done');
+            if (i + 1 < n) s.classList.add('done');
+            if (i + 1 === n) s.classList.add('active');
+        });
+    }
+
+    function processPayment() {
+        const fname = document.getElementById('fname').value;
+        const email = document.getElementById('email').value;
+        if (!fname || !email) {
+            alert('Please fill in your account details (Name & Email).');
+            return;
+        }
+        setStep(2);
+        const btn = document.querySelector('.pay-button');
+        btn.textContent = '⏳ Processing...';
+        btn.disabled = true;
+
+        setTimeout(() => {
+            setStep(3);
+            const orderId = 'GS-' + Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('success-game').textContent = gameName;
+            document.getElementById('order-id').textContent = 'ORDER #' + orderId;
+            document.getElementById('success-overlay').classList.add('show');
+        }, 2000);
+    }
+
+    function downloadGame() {
+        alert(`🎮 Download started for ${gameName}!\n\nIn a real store, this would initiate the game download.`);
+    }
+</script>
+</body>
+</html>
