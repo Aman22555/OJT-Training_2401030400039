@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameStore - Game Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #d57454;
+            --bg: #0a0c0e;
+            --card: #12151a;
+            --border: #1e2228;
+            --text: #e8e0d6;
+            --dim: #7a8090;
+        }
+        body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); }
+
+        .navbar-brand {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.6rem; font-weight: 800;
+            color: var(--accent) !important;
+            letter-spacing: 2px;
+        }
+        .back-link {
+            color: var(--dim); font-weight: 600; font-size: 0.85rem;
+            text-transform: uppercase; letter-spacing: 1px;
+            text-decoration: none; transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--accent); }
+
+        .detail-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .detail-img {
+            width: 100%; height: 320px;
+            object-fit: cover;
+            display: block;
+        }
+        .game-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 2.8rem; font-weight: 800;
+            text-transform: uppercase;
+            color: var(--accent);
+            line-height: 1;
+        }
+        .game-tag {
+            font-size: 0.78rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+            padding: 3px 12px; border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            display: inline-block;
+        }
+        .spec-label {
+            color: var(--accent);
+            font-weight: 700; font-size: 0.8rem;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .specs-table td { padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+        .specs-table tr:last-child td { border-bottom: none; }
+
+        .buy-area { background: #0d0f12; border-top: 1px solid var(--border); }
+        .price-display {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 3rem; font-weight: 800;
+            color: var(--accent);
+        }
+        .btn-buy {
+            background: var(--accent); color: #fff;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.2rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 2px;
+            border: none; border-radius: 4px;
+            padding: 14px 48px;
+            transition: background 0.2s, transform 0.1s;
+            text-decoration: none; display: inline-block;
+        }
+        .btn-buy:hover { background: #bf5f40; color: #fff; transform: translateY(-2px); }
+
+        [data-accent] { --accent: attr(data-accent); } 
+        #not-found { display: none; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark sticky-top border-bottom border-secondary" style="background:#0d0f12;">
+    <div class="container-fluid px-4 d-flex align-items-center justify-content-between">
+        <a class="navbar-brand" href="Home.html">🎮 GameStore</a>
+        <a href="Home.html" class="back-link">← Back to Store</a>
+    </div>
+</nav>
+
+<div id="loading" class="text-center py-5">
+    <div class="spinner-border text-secondary" role="status"></div>
+    <p class="text-secondary mt-3 small text-uppercase letter-spacing-1">Loading game…</p>
+</div>
+
+<div id="not-found" class="container py-5 text-center">
+    <p class="display-1">🎮</p>
+    <h2 class="text-uppercase" style="font-family:'Barlow Condensed',sans-serif; color:var(--accent);">Game Not Found</h2>
+    <p class="text-secondary mb-4">We couldn't find that game in our store.</p>
+    <a href="Home.html" class="btn-buy">← Back to Store</a>
+</div>
+
+<div id="detail-content" class="container my-4" style="display:none; max-width:960px;">
+    <div class="detail-card">
+        <div class="row g-0">
+            <div class="col-md-5">
+                <img id="g-img" src="" alt="" class="detail-img h-100">
+            </div>
+            <div class="col-md-7 p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <h1 id="g-title" class="game-title mb-2"></h1>
+                    <div id="g-tags" class="mb-3 d-flex flex-wrap gap-2"></div>
+                    <p id="g-desc" class="text-secondary lh-lg mb-3" style="font-size:1rem;"></p>
+                    <table class="specs-table w-100">
+                        <tbody id="g-specs"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="buy-area text-center p-4">
+            <div id="g-price" class="price-display mb-3"></div>
+            <a id="g-buy-btn" href="#" class="btn-buy">🛒 Buy Now &amp; Download</a>
+            <p class="text-secondary small mt-3 mb-0">🔒 Secure payment · Instant digital delivery</p>
+        </div>
+    </div>
+</div>
+
+<footer class="text-center py-4 border-top border-secondary mt-5" style="color:var(--dim); font-size:0.8rem;">
+    © 2025 GameStore. All rights reserved. · All prices in INR.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const GAMES = {
+    bgmi: {
+        title: "Battlegrounds Mobile India",
+        accent: "#d57454",
+        tags: ["Action", "Multiplayer", "Battle Royale"],
+        img: "https://i.ytimg.com/vi/-ErnVg5aDag/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLB2s6Mg9edxIvXk0j_CFGvN79HmWA",
+        desc: "BGMI is a premier battle royale game where multiple players employ strategies to fight and be the last man standing. Experience diverse maps, intense gunplay, and constant updates in this mobile-optimized masterpiece.",
+        specs: [
+            ["Publisher",     "Krafton"],
+            ["Release Date",  "July 2, 2021"],
+            ["Min. RAM",      "8 GB (16 GB Recommended)"],
+            ["OS",            "Windows 10/11"],
+            ["Storage",       "~8 GB"]
+        ],
+        price: "₹4,999.99",
+        priceRaw: "4999.99",
+        payKey: "BGMI"
+    },
+    cs2: {
+        title: "Counter-Strike 2",
+        accent: "#de9b35",
+        tags: ["FPS", "Competitive", "Tactical"],
+        img: "https://wallpapercave.com/wp/wp12817967.jpg",
+        desc: "Counter-Strike 2 is the largest technical leap forward in Counter-Strike's history, built on the Source 2 engine with realistic smoke grenades, overhauled maps, and sub-tick updates.",
+        specs: [
+            ["Developer", "Valve Corporation"],
+            ["Engine",    "Source 2"],
+            ["Storage",   "85 GB available space"],
+            ["Graphics",  "GTX 1060 / Radeon RX 580"],
+            ["OS",        "Windows 10/11 64-bit"]
+        ],
+        price: "₹7,999.99",
+        priceRaw: "7999.99",
+        payKey: "CS2"
+    },
+    cyberpunk: {
+        title: "Cyberpunk 2077",
+        accent: "#de9b35",
+        tags: ["RPG", "Action", "Open World"],
+        img: "https://store-images.s-microsoft.com/image/apps.36537.14143814686075364.7e443c56-2382-4bea-8ceb-35638e527cd6.475937df-e65f-4850-b2f0-471c2966f074",
+        desc: "Cyberpunk 2077 is an open-world, action-adventure RPG set in the megalopolis of Night City, where you play as a cyberpunk mercenary wrapped up in a do-or-die fight for survival.",
+        specs: [
+            ["Developer", "CD PROJEKT RED"],
+            ["Engine",    "REDengine 4"],
+            ["Storage",   "70 GB available space"],
+            ["Graphics",  "GTX 1060 / Radeon RX 590"],
+            ["OS",        "Windows 10 64-bit"]
+        ],
+        price: "₹8,999.99",
+        priceRaw: "8999.99",
+        payKey: "Cyberpunk+2077"
+    },
+    eldenring: {
+        title: "Elden Ring",
+        accent: "#de9b35",
+        tags: ["Action RPG", "Fantasy", "Souls-like"],
+        img: "https://4kwallpapers.com/images/wallpapers/elden-ring-7680x4320-20173.jpg",
+        desc: "THE NEW FANTASY ACTION RPG. Rise, Tarnished, and be guided by grace to brandish the power of the Elden Ring and become an Elden Lord in the Lands Between.",
+        specs: [
+            ["Developer",  "FromSoftware Inc."],
+            ["Publisher",  "Bandai Namco"],
+            ["Storage",    "60 GB available space"],
+            ["Graphics",   "NVIDIA GTX 1060 / AMD RX 580"],
+            ["OS",         "Windows 10"]
+        ],
+        price: "₹6,999.99",
+        priceRaw: "6999.99",
+        payKey: "Elden+Ring"
+    },
+    "shadow-ninja": {
+        title: "Shadow Ninja",
+        accent: "#8e44ad",
+        tags: ["Stealth", "Action", "Single Player"],
+        img: "https://images.wallpapersden.com/image/download/ninja-shadow-dark_bGZmbm6UmZqaraWkpJRmbmdlrWZlbWU.jpg",
+        desc: "Become the ultimate weapon. Master the art of the shadow, utilize ancient gadgets, and navigate through heavily guarded fortresses. Every move counts.",
+        specs: [
+            ["Genre",      "Action / Parkour"],
+            ["Platforms",  "PC, PS5, Xbox Series X"],
+            ["Graphics",   "Ray-Tracing Supported"],
+            ["Developer",  "Shadow Realm Studios"],
+            ["Storage",    "~4 GB"]
+        ],
+        price: "₹2,999.99",
+        priceRaw: "2999.99",
+        payKey: "Shadow+Ninja"
+    },
+    valorant: {
+        title: "VALORANT",
+        accent: "#ff4655",
+        tags: ["Tactical", "5v5 Shooter", "Character-Based"],
+        img: "https://wallpapercave.com/wp/wp13545461.jpg",
+        desc: "Blend your style and experience on a global, competitive stage. 13 rounds to attack and defend. Sharp gunplay, tactical abilities. One life per round — think faster or die.",
+        specs: [
+            ["Developer",  "Riot Games"],
+            ["Storage",    "~30 GB"],
+            ["Processor",  "Intel i3-4150 / Ryzen 3 1200"],
+            ["Graphics",   "GeForce GT 730 / Radeon R7 240"],
+            ["OS",         "Windows 10/11"]
+        ],
+        price: "₹5,999.99",
+        priceRaw: "5999.99",
+        payKey: "VALORANT"
+    },
+    "forza-horizon-6": {
+        title: "Forza Horizon 6",
+        accent: "#FF4FD8",
+        tags: ["Racing", "Open World", "Simulation"],
+        img: "https://static.wikia.nocookie.net/fantendo/images/f/f9/Forza-Horizon-6-Wallpaper.jpg/revision/latest?cb=20241018221700",
+        desc: "Forza Horizon 6 is the ultimate open-world racing experience. Explore breathtaking environments, race hundreds of the world's greatest cars, and dominate every road and terrain across a vast and ever-expanding festival world.",
+        specs: [
+            ["Developer",  "Playground Games"],
+            ["Publisher",  "Xbox Game Studios"],
+            ["Storage",    "~100 GB available space"],
+            ["Graphics",   "NVIDIA GTX 1070 / AMD RX 5700"],
+            ["OS",         "Windows 10/11 64-bit"]
+        ],
+        price: "₹5,999.99",
+        priceRaw: "5999.99",
+        payKey: "Forza+Horizon+6"
+    },
+    "god-of-war": {
+        title: "God of War Ragnarök",
+        accent: "#4a90d9",
+        tags: ["Action Adventure", "Story-Rich", "Mythology"],
+        img: "https://cdn.wallpapersafari.com/15/57/uPNyez.jpg",
+        desc: "Kratos and Atreus must journey to each of the Nine Realms in search of answers as Asgardian forces prepare for a prophesied battle that will end the world. Face fearsome new allies and enemies as the fate of the Realms hangs in the balance.",
+        specs: [
+            ["Developer",  "Santa Monica Studio"],
+            ["Publisher",  "Sony Interactive Entertainment"],
+            ["Storage",    "~90 GB available space"],
+            ["Graphics",   "NVIDIA GTX 1070 / AMD RX 5700 XT"],
+            ["OS",         "Windows 10/11 64-bit"]
+        ],
+        price: "₹3,999.99",
+        priceRaw: "3999.99",
+        payKey: "God+of+War"
+    }
+};
+
+(function () {
+    const params = new URLSearchParams(window.location.search);
+    const key    = (params.get("game") || "").toLowerCase().trim();
+    const game   = GAMES[key];
+
+    document.getElementById("loading").style.display = "none";
+
+    if (!game) {
+        document.getElementById("not-found").style.display = "block";
+        return;
+    }
+
+    document.documentElement.style.setProperty("--accent", game.accent);
+
+    document.title = `${game.title} — GameStore`;
+    document.getElementById("g-img").src  = game.img;
+    document.getElementById("g-img").alt  = game.title;
+    document.getElementById("g-title").textContent = game.title;
+    document.getElementById("g-desc").textContent  = game.desc;
+    document.getElementById("g-price").textContent = game.price;
+
+    const tagsEl = document.getElementById("g-tags");
+    game.tags.forEach(t => {
+        const span = document.createElement("span");
+        span.className = "game-tag";
+        span.textContent = t;
+        span.style.borderColor = game.accent + "55";
+        span.style.color       = game.accent;
+        tagsEl.appendChild(span);
+    });
+
+    const specsEl = document.getElementById("g-specs");
+    game.specs.forEach(([label, val]) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td class="spec-label pe-3" style="width:40%">${label}</td>
+            <td class="text-secondary">${val}</td>`;
+        specsEl.appendChild(tr);
+    });
+
+    document.getElementById("g-buy-btn").href =
+        `payment.html?game=${game.payKey}&price=${game.priceRaw}`;
+
+    document.getElementById("detail-content").style.display = "block";
+})();
+</script>
+</body>
+</html>
