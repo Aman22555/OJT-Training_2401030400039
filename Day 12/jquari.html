@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>jQuery Zebra Table</title>
+    <style>
+      body { font-family: Arial, Helvetica, sans-serif; padding: 24px; background:#f7fafc }
+      table { width:100%; border-collapse:collapse; background:#fff }
+      th, td { padding:10px 12px; border:1px solid #e5e7eb; text-align:left }
+      th { background:#111827; color:#fff }
+      .zebra-odd { background:#f3f4f6 }
+      .zebra-hover { background:#e6eef8 !important }
+      .delete-row { background:#ef4444; color:#fff; border:none; padding:6px 8px; border-radius:4px; cursor:pointer }
+      .delete-row:hover { background:#dc2626 }
+      .container { max-width:900px; margin:0 auto }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>jQuery Zebra Script Table Effect</h1>
+      <p>Rows are striped with jQuery and get a highlight on hover.</p>
+
+      <section style="margin:18px 0; padding:12px; background:#fff; border:1px solid #e5e7eb; border-radius:6px;">
+        <h2 style="margin:0 0 8px 0; font-size:18px;">Move DIV demo</h2>
+        <p style="margin:0 0 12px 0; font-size:14px; color:#374151">Click the buttons to move <strong>Box A</strong> inside <strong>Box B</strong> (and back).</p>
+        <div id="boxContainer" style="display:flex; gap:12px; align-items:flex-start;">
+          <div id="boxA" style="width:220px; padding:12px; background:#f9fafb; border:1px solid #e5e7eb; border-radius:4px">Box A (movable)</div>
+          <div id="boxB" style="width:220px; padding:12px; background:#ffffff; border:1px solid #e5e7eb; border-radius:4px">Box B (target)</div>
+        </div>
+        <div style="margin-top:10px;">
+          <button id="moveToB" style="margin-right:8px;">Move A → B</button>
+          <button id="moveBack">Move Back</button>
+        </div>
+      </section>
+
+      <table class="zebra" id="employees">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Location</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Alice</td><td>Engineering</td><td>New York</td><td><button class="delete-row">Delete</button></td></tr>
+          <tr><td>2</td><td>Bob</td><td>Design</td><td>San Francisco</td><td><button class="delete-row">Delete</button></td></tr>
+          <tr><td>3</td><td>Carla</td><td>Marketing</td><td>London</td><td><button class="delete-row">Delete</button></td></tr>
+          <tr><td>4</td><td>Daniel</td><td>Support</td><td>Toronto</td><td><button class="delete-row">Delete</button></td></tr>
+          <tr><td>5</td><td>Emma</td><td>Sales</td><td>Sydney</td><td><button class="delete-row">Delete</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(function(){
+        function updateZebra(){
+          $('table.zebra tbody tr').removeClass('zebra-odd');
+          $('table.zebra tbody tr:odd').addClass('zebra-odd');
+        }
+
+        updateZebra();
+
+        $('table.zebra').on('mouseenter','tbody tr', function(){ $(this).addClass('zebra-hover'); })
+          .on('mouseleave','tbody tr', function(){ $(this).removeClass('zebra-hover'); });
+
+        $('#employees').on('click','thead th', function(){
+          $('table.zebra tbody tr').toggleClass('zebra-odd');
+          updateZebra();
+        });
+
+        $('#employees').on('click', '.delete-row', function(){
+          var $tr = $(this).closest('tr');
+          $tr.fadeOut(180, function(){
+            $(this).remove();
+            updateZebra();
+          });
+        });
+
+        $('#moveToB').on('click', function(){
+          $('#boxA').fadeOut(200, function(){
+            $(this).appendTo('#boxB').fadeIn(250);
+          });
+        });
+
+        $('#moveBack').on('click', function(){
+          $('#boxA').fadeOut(200, function(){
+            $(this).prependTo('#boxContainer').fadeIn(250);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
