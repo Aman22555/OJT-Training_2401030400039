@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameStore — Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #d57454;
+            --accent-dim: rgba(213,116,84,.12);
+            --bg: #07090c;
+            --sidebar-bg: #0b0e13;
+            --card: #0f1318;
+            --card2: #131820;
+            --border: #1c2130;
+            --text: #e8e0d6;
+            --dim: #5a6275;
+            --success: #3ec97a;
+            --danger: #e05252;
+            --warn: #e8b84b;
+            --info: #5b9cf6;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { height: 100%; margin: 0; }
+        body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        /* ---- SIDEBAR ---- */
+        .sidebar {
+            position: fixed; top: 0; left: 0; height: 100vh; width: 240px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            z-index: 1000; transition: transform .3s;
+        }
+        .sidebar-brand {
+            padding: 22px 20px 18px;
+            border-bottom: 1px solid var(--border);
+        }
+        .brand-name {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.4rem; font-weight: 900; color: var(--accent);
+            letter-spacing: 3px; text-transform: uppercase;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .brand-role {
+            font-size: .65rem; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--dim); margin-top: 4px;
+        }
+        .sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+        .nav-section-label {
+            font-size: .6rem; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--dim); padding: 8px 20px 6px;
+        }
+        .nav-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 11px 20px; font-size: .9rem; font-weight: 600;
+            color: var(--dim); text-transform: uppercase; letter-spacing: .5px;
+            cursor: pointer; transition: all .2s; border-left: 3px solid transparent;
+            text-decoration: none;
+        }
+        .nav-item:hover { color: var(--text); background: rgba(255,255,255,.03); }
+        .nav-item.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-dim); }
+        .nav-item i { width: 20px; text-align: center; font-size: 1rem; }
+        .nav-badge {
+            margin-left: auto; background: var(--accent); color: #fff;
+            font-size: .6rem; font-weight: 700; padding: 2px 7px; border-radius: 10px;
+        }
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+        }
+        .admin-user-card {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .avatar {
+            width: 34px; height: 34px; border-radius: 8px;
+            background: var(--accent-dim); border: 1px solid rgba(213,116,84,.3);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--accent); font-size: .9rem; flex-shrink: 0;
+        }
+        .admin-name { font-size: .85rem; font-weight: 700; }
+        .admin-role-label { font-size: .65rem; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
+        .logout-btn {
+            margin-left: auto; background: none; border: none; color: var(--dim);
+            cursor: pointer; font-size: 1rem; transition: color .2s; padding: 4px;
+        }
+        .logout-btn:hover { color: var(--danger); }
+
+        /* ---- MAIN CONTENT ---- */
+        .main-content { margin-left: 240px; min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* TOP BAR */
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(7,9,12,.85); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 28px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .page-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
+        }
+        .topbar-actions { display: flex; align-items: center; gap: 12px; }
+        .view-store-btn {
+            display: flex; align-items: center; gap: 6px;
+            padding: 7px 16px; background: var(--card); border: 1px solid var(--border);
+            border-radius: 6px; color: var(--dim); font-size: .82rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: .5px;
+            text-decoration: none; transition: all .2s;
+        }
+        .view-store-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* PAGE SECTIONS */
+        .page { display: none; padding: 28px; flex: 1; }
+        .page.active { display: block; }
+
+        /* STAT CARDS */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+        .stat-card {
+            background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 20px; position: relative; overflow: hidden;
+        }
+        .stat-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        }
+        .stat-card.orange::before { background: var(--accent); }
+        .stat-card.green::before { background: var(--success); }
+        .stat-card.blue::before { background: var(--info); }
+        .stat-card.yellow::before { background: var(--warn); }
+        .stat-value {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 2.2rem; font-weight: 800; line-height: 1;
+        }
+        .stat-card.orange .stat-value { color: var(--accent); }
+        .stat-card.green .stat-value { color: var(--success); }
+        .stat-card.blue .stat-value { color: var(--info); }
+        .stat-card.yellow .stat-value { color: var(--warn); }
+        .stat-label { font-size: .72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--dim); margin-top: 4px; }
+        .stat-icon { position: absolute; right: 16px; top: 16px; font-size: 1.6rem; opacity: .15; }
+
+        /* SECTION HEADER */
+        .section-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
+            padding-left: 12px; border-left: 3px solid var(--accent);
+        }
+
+        /* BUTTONS */
+        .btn-accent {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 9px 18px; background: var(--accent); border: none; border-radius: 6px;
+            color: #fff; font-family: 'Barlow Condensed', sans-serif;
+            font-size: .95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; transition: background .2s;
+        }
+        .btn-accent:hover { background: #bf5f40; }
+        .btn-sm-outline {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 12px; background: none; border: 1px solid var(--border);
+            border-radius: 5px; color: var(--dim); font-size: .78rem; font-weight: 700;
+            font-family: 'Rajdhani', sans-serif; text-transform: uppercase;
+            cursor: pointer; transition: all .2s;
+        }
+        .btn-sm-outline:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-danger-sm {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 12px; background: none; border: 1px solid rgba(224,82,82,.3);
+            border-radius: 5px; color: var(--danger); font-size: .78rem; font-weight: 700;
+            font-family: 'Rajdhani', sans-serif; text-transform: uppercase;
+            cursor: pointer; transition: all .2s;
+        }
+        .btn-danger-sm:hover { background: rgba(224,82,82,.1); border-color: var(--danger); }
+
+        /* TABLE */
+        .table-wrap {
+            background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            overflow: hidden;
+        }
+        .search-bar-wrap {
+            padding: 14px 16px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .search-input {
+            flex: 1; background: var(--bg); border: 1px solid var(--border);
+            border-radius: 6px; color: var(--text); font-family: 'Rajdhani', sans-serif;
+            font-size: .9rem; padding: 8px 14px; outline: none;
+        }
+        .search-input:focus { border-color: var(--accent); }
+        .filter-select {
+            background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+            color: var(--dim); font-family: 'Rajdhani', sans-serif;
+            font-size: .85rem; padding: 8px 12px; outline: none; cursor: pointer;
+        }
+        .filter-select:focus { border-color: var(--accent); }
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            background: #0a0d11; color: var(--accent);
+            font-size: .68rem; text-transform: uppercase; letter-spacing: 1.5px;
+            padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        tbody td {
+            padding: 12px 16px; border-bottom: 1px solid var(--border);
+            font-size: .9rem; vertical-align: middle; color: var(--dim);
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover td { background: rgba(255,255,255,.02); }
+        .game-thumb { width: 52px; height: 38px; object-fit: cover; border-radius: 4px; }
+        .game-title-cell { color: var(--text); font-weight: 700; font-size: .95rem; }
+        .badge-cat {
+            display: inline-block; padding: 2px 10px; border-radius: 4px;
+            font-size: .67rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .badge-cat.battle-royale { background: rgba(213,116,84,.15); color: var(--accent); }
+        .badge-cat.fps-shooter   { background: rgba(91,156,246,.15); color: var(--info); }
+        .badge-cat.rpg           { background: rgba(232,184,75,.15); color: var(--warn); }
+        .badge-cat.action        { background: rgba(224,82,82,.15); color: var(--danger); }
+        .badge-cat.racing        { background: rgba(62,201,122,.15); color: var(--success); }
+        .badge-cat.sports        { background: rgba(62,201,122,.15); color: var(--success); }
+        .badge-cat.puzzle        { background: rgba(165,110,255,.15); color: #a56eff; }
+        .badge-cat.simulation    { background: rgba(91,156,246,.15); color: var(--info); }
+        .badge-cat.free          { background: rgba(62,201,122,.15); color: var(--success); }
+        .price-cell { font-weight: 700; color: var(--accent); }
+        .price-cell.free { color: var(--success); }
+        .badge-slider {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: rgba(232,184,75,.12); border: 1px solid rgba(232,184,75,.3);
+            color: var(--warn); font-size: .63rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px; padding: 2px 8px; border-radius: 4px;
+        }
+        .badge-featured {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: rgba(91,156,246,.12); border: 1px solid rgba(91,156,246,.3);
+            color: var(--info); font-size: .63rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px; padding: 2px 8px; border-radius: 4px;
+        }
+        .actions-cell { display: flex; gap: 6px; }
+        .empty-state {
+            text-align: center; padding: 60px 20px;
+            color: var(--dim);
+        }
+        .empty-state i { font-size: 2.5rem; opacity: .3; display: block; margin-bottom: 12px; }
+
+        /* SLIDER MANAGER */
+        .slider-manager { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .slider-list, .available-games {
+            background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            overflow: hidden;
+        }
+        .panel-head {
+            padding: 14px 18px; border-bottom: 1px solid var(--border);
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .panel-count {
+            background: var(--accent-dim); border: 1px solid rgba(213,116,84,.3);
+            color: var(--accent); font-size: .65rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+            padding: 2px 10px; border-radius: 10px;
+        }
+        .slider-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 18px; border-bottom: 1px solid var(--border);
+            transition: background .2s; cursor: grab;
+        }
+        .slider-item:last-child { border-bottom: none; }
+        .slider-item:hover { background: rgba(255,255,255,.02); }
+        .drag-handle { color: var(--dim); font-size: 1rem; cursor: grab; }
+        .slider-thumb { width: 72px; height: 44px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
+        .slider-info { flex: 1; min-width: 0; }
+        .slider-game-title { font-weight: 700; font-size: .9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .slider-game-genre { font-size: .72rem; color: var(--dim); text-transform: uppercase; letter-spacing: .5px; }
+        .order-badge {
+            background: var(--accent); color: #fff;
+            width: 22px; height: 22px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: .7rem; font-weight: 700; flex-shrink: 0;
+        }
+        .remove-slider-btn {
+            background: none; border: none; color: var(--dim); cursor: pointer;
+            font-size: .95rem; padding: 4px; transition: color .2s;
+        }
+        .remove-slider-btn:hover { color: var(--danger); }
+        .available-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 18px; border-bottom: 1px solid var(--border);
+            transition: background .2s;
+        }
+        .available-item:last-child { border-bottom: none; }
+        .available-item:hover { background: rgba(255,255,255,.02); }
+        .add-slider-btn {
+            margin-left: auto; background: var(--accent-dim); border: 1px solid rgba(213,116,84,.3);
+            border-radius: 5px; color: var(--accent); font-size: .75rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: .5px;
+            padding: 4px 12px; cursor: pointer; transition: all .2s; flex-shrink: 0;
+        }
+        .add-slider-btn:hover { background: var(--accent); color: #fff; }
+        .add-slider-btn:disabled { opacity: .4; cursor: not-allowed; }
+        .slider-max-note {
+            padding: 12px 18px; font-size: .75rem; color: var(--dim);
+            text-align: center; border-top: 1px solid var(--border);
+            background: rgba(232,184,75,.04);
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; z-index: 2000;
+            background: rgba(0,0,0,.7); backdrop-filter: blur(4px);
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 10px; width: 100%; max-width: 560px;
+            max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 32px 80px rgba(0,0,0,.6);
+        }
+        .modal-header {
+            padding: 20px 24px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; background: var(--card); z-index: 1;
+        }
+        .modal-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.2rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
+        }
+        .modal-close {
+            background: none; border: none; color: var(--dim); cursor: pointer;
+            font-size: 1.2rem; transition: color .2s; padding: 4px;
+        }
+        .modal-close:hover { color: var(--text); }
+        .modal-body { padding: 24px; }
+        .modal-footer {
+            padding: 16px 24px; border-top: 1px solid var(--border);
+            display: flex; justify-content: flex-end; gap: 10px;
+            position: sticky; bottom: 0; background: var(--card);
+        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-label {
+            display: block; font-size: .68rem; text-transform: uppercase;
+            letter-spacing: 1.5px; color: var(--dim); margin-bottom: 7px;
+        }
+        .form-input, .form-select, .form-textarea {
+            width: 100%; background: var(--bg); border: 1px solid var(--border);
+            border-radius: 6px; color: var(--text); font-family: 'Rajdhani', sans-serif;
+            font-size: .95rem; padding: 10px 13px; outline: none; transition: border-color .2s;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+        .form-textarea { resize: vertical; min-height: 80px; }
+        .form-check-row { display: flex; align-items: center; gap: 10px; }
+        .form-check-row input[type="checkbox"] { accent-color: var(--accent); width: 15px; height: 15px; }
+        .form-check-row label { font-size: .85rem; color: var(--dim); margin: 0; }
+
+        /* TOAST */
+        .toast-wrap {
+            position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+            display: flex; flex-direction: column; gap: 8px; align-items: flex-end;
+        }
+        .toast-item {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--card2); border: 1px solid var(--border);
+            border-radius: 8px; padding: 12px 18px;
+            box-shadow: 0 8px 24px rgba(0,0,0,.4);
+            font-size: .88rem; font-weight: 600;
+            transform: translateX(120%); opacity: 0;
+            transition: all .3s cubic-bezier(.34,1.56,.64,1);
+            max-width: 320px;
+        }
+        .toast-item.show { transform: translateX(0); opacity: 1; }
+        .toast-item.success { border-left: 3px solid var(--success); }
+        .toast-item.error   { border-left: 3px solid var(--danger); }
+        .toast-item.info    { border-left: 3px solid var(--info); }
+        .toast-item.warn    { border-left: 3px solid var(--warn); }
+
+        /* DELETE CONFIRM */
+        .confirm-overlay {
+            display: none; position: fixed; inset: 0; z-index: 3000;
+            background: rgba(0,0,0,.75); align-items: center; justify-content: center;
+        }
+        .confirm-overlay.show { display: flex; }
+        .confirm-box {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 10px; padding: 28px; max-width: 380px; width: 100%;
+            margin: 20px; text-align: center;
+            box-shadow: 0 24px 64px rgba(0,0,0,.6);
+        }
+        .confirm-icon { font-size: 2.5rem; color: var(--danger); margin-bottom: 12px; }
+        .confirm-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+        .confirm-msg { font-size: .88rem; color: var(--dim); margin-bottom: 24px; }
+        .confirm-btns { display: flex; gap: 10px; justify-content: center; }
+        .btn-confirm-cancel { padding: 10px 24px; background: var(--card2); border: 1px solid var(--border); border-radius: 6px; color: var(--dim); font-family: 'Barlow Condensed', sans-serif; font-size: .95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all .2s; }
+        .btn-confirm-cancel:hover { border-color: var(--dim); color: var(--text); }
+        .btn-confirm-delete { padding: 10px 24px; background: var(--danger); border: none; border-radius: 6px; color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: .95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: background .2s; }
+        .btn-confirm-delete:hover { background: #c03434; }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .slider-manager { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-name"><i class="bi bi-controller"></i> GameStore</div>
+        <div class="brand-role">Admin Control Panel</div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Main</div>
+        <a class="nav-item active" onclick="showPage('dashboard',this)" href="#">
+            <i class="bi bi-grid-3x3-gap-fill"></i> Dashboard
+        </a>
+        <a class="nav-item" onclick="showPage('games',this)" href="#">
+            <i class="bi bi-controller"></i> Games
+            <span class="nav-badge" id="nav-games-count">0</span>
+        </a>
+        <a class="nav-item" onclick="showPage('slider',this)" href="#">
+            <i class="bi bi-images"></i> Hero Slider
+            <span class="nav-badge" id="nav-slider-count">0</span>
+        </a>
+        <div class="nav-section-label" style="margin-top:8px;">Store</div>
+        <a class="nav-item" href="Home.html" target="_blank">
+            <i class="bi bi-shop"></i> View Store
+        </a>
+        <a class="nav-item" href="admin-login.html">
+            <i class="bi bi-box-arrow-right"></i> Logout
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <div class="admin-user-card">
+            <div class="avatar"><i class="bi bi-person-fill"></i></div>
+            <div>
+                <div class="admin-name" id="adminNameDisplay">Admin</div>
+                <div class="admin-role-label">Super Admin</div>
+            </div>
+            <button class="logout-btn" onclick="logout()" title="Logout"><i class="bi bi-box-arrow-right"></i></button>
+        </div>
+    </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="page-title" id="pageTitleDisplay">Dashboard</div>
+        <div class="topbar-actions">
+            <a href="Home.html" target="_blank" class="view-store-btn">
+                <i class="bi bi-box-arrow-up-right"></i> View Store
+            </a>
+        </div>
+    </div>
+
+    <!-- ======================== DASHBOARD PAGE ======================== -->
+    <div class="page active" id="page-dashboard">
+        <div class="stats-grid" id="statsGrid">
+            <!-- Rendered by JS -->
+        </div>
+        <div class="section-header">
+            <div class="section-title">Recent Games</div>
+            <button class="btn-accent" onclick="showPage('games'); openAddModal()">
+                <i class="bi bi-plus-lg"></i> Add Game
+            </button>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr>
+                    <th>Cover</th><th>Title</th><th>Category</th><th>Price</th><th>Actions</th>
+                </tr></thead>
+                <tbody id="dashboardRecentTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ======================== GAMES PAGE ======================== -->
+    <div class="page" id="page-games">
+        <div class="section-header">
+            <div class="section-title">All Games</div>
+            <button class="btn-accent" onclick="openAddModal()">
+                <i class="bi bi-plus-lg"></i> Add New Game
+            </button>
+        </div>
+        <div class="table-wrap">
+            <div class="search-bar-wrap">
+                <input class="search-input" type="search" id="gameSearchInput" placeholder="Search games by title, genre..." oninput="renderGamesTable()">
+                <select class="filter-select" id="gameCatFilter" onchange="renderGamesTable()">
+                    <option value="">All Categories</option>
+                    <option value="battle-royale">Battle Royale</option>
+                    <option value="fps-shooter">FPS / Shooter</option>
+                    <option value="rpg">RPG</option>
+                    <option value="action">Action / Adventure</option>
+                    <option value="racing">Racing</option>
+                    <option value="sports">Sports</option>
+                    <option value="puzzle">Puzzle</option>
+                    <option value="simulation">Simulation</option>
+                </select>
+                <select class="filter-select" id="gamePriceFilter" onchange="renderGamesTable()">
+                    <option value="">All Prices</option>
+                    <option value="free">Free Only</option>
+                    <option value="paid">Paid Only</option>
+                </select>
+            </div>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead><tr>
+                        <th>Cover</th><th>Title</th><th>Category</th><th>Platform</th>
+                        <th>Price</th><th>Flags</th><th>Actions</th>
+                    </tr></thead>
+                    <tbody id="gamesTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================== SLIDER PAGE ======================== -->
+    <div class="page" id="page-slider">
+        <div class="section-header">
+            <div class="section-title">Hero Slider Manager</div>
+        </div>
+        <p style="font-size:.85rem;color:var(--dim);margin-bottom:20px;">
+            Manage which games appear in the homepage hero carousel. Max 5 slides. Drag to reorder.
+        </p>
+        <div class="slider-manager">
+            <div class="slider-list">
+                <div class="panel-head">
+                    Active Slides
+                    <span class="panel-count" id="sliderCountBadge">0 / 5</span>
+                </div>
+                <div id="sliderActiveList"><!-- rendered --></div>
+                <div class="slider-max-note" id="sliderMaxNote" style="display:none;">
+                    <i class="bi bi-info-circle me-1"></i> Maximum 5 slider items reached.
+                </div>
+            </div>
+            <div class="available-games">
+                <div class="panel-head">Available Games</div>
+                <div style="padding:10px 18px; border-bottom:1px solid var(--border);">
+                    <input class="search-input" type="search" id="sliderSearchInput" placeholder="Search games to add..." oninput="renderSliderAvailable()" style="width:100%;">
+                </div>
+                <div id="sliderAvailableList" style="max-height:400px;overflow-y:auto;"><!-- rendered --></div>
+            </div>
+        </div>
+    </div>
+</div><!-- /main-content -->
+
+<!-- ======================== ADD/EDIT GAME MODAL ======================== -->
+<div class="modal-overlay" id="gameModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="modal-title" id="modalTitle">Add New Game</div>
+            <button class="modal-close" onclick="closeModal()"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editGameId">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Game Title *</label>
+                    <input type="text" class="form-input" id="f-title" placeholder="e.g. Elden Ring" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Genre</label>
+                    <input type="text" class="form-input" id="f-genre" placeholder="e.g. Action RPG">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Category *</label>
+                    <select class="form-select" id="f-category">
+                        <option value="battle-royale">Battle Royale</option>
+                        <option value="fps-shooter">FPS / Shooter</option>
+                        <option value="rpg">RPG</option>
+                        <option value="action">Action / Adventure</option>
+                        <option value="racing">Racing</option>
+                        <option value="sports">Sports</option>
+                        <option value="puzzle">Puzzle</option>
+                        <option value="simulation">Simulation</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Platform</label>
+                    <input type="text" class="form-input" id="f-platform" placeholder="e.g. PC / Console">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Price (₹) — 0 for FREE</label>
+                    <input type="number" class="form-input" id="f-price" placeholder="0" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Storage Required</label>
+                    <input type="text" class="form-input" id="f-storage" placeholder="e.g. 16GB">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Cover Image URL *</label>
+                <input type="url" class="form-input" id="f-img" placeholder="https://..." oninput="previewImg(this.value)">
+                <div id="imgPreviewWrap" style="margin-top:10px;display:none;">
+                    <img id="imgPreview" src="" alt="Preview"
+                         style="width:100%;height:130px;object-fit:cover;border-radius:6px;border:1px solid var(--border);"
+                         onerror="document.getElementById('imgPreviewWrap').style.display='none'">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea class="form-textarea" id="f-desc" placeholder="Short game description..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Game Page ID (URL slug)</label>
+                <input type="text" class="form-input" id="f-id" placeholder="e.g. elden-ring (auto-filled)">
+                <div style="font-size:.72rem;color:var(--dim);margin-top:4px;">Used in links. Leave blank to auto-generate from title.</div>
+            </div>
+            <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:4px;">
+                <div class="form-check-row">
+                    <input type="checkbox" id="f-featured">
+                    <label for="f-featured">Show in Featured Cards</label>
+                </div>
+                <div class="form-check-row">
+                    <input type="checkbox" id="f-inSlider">
+                    <label for="f-inSlider">Add to Hero Slider</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-sm-outline" onclick="closeModal()">Cancel</button>
+            <button class="btn-accent" onclick="saveGame()"><i class="bi bi-check-lg"></i> Save Game</button>
+        </div>
+    </div>
+</div>
+
+<!-- DELETE CONFIRM -->
+<div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-box">
+        <div class="confirm-icon"><i class="bi bi-trash3-fill"></i></div>
+        <div class="confirm-title">Delete Game?</div>
+        <div class="confirm-msg" id="confirmMsg">This action cannot be undone.</div>
+        <div class="confirm-btns">
+            <button class="btn-confirm-cancel" onclick="closeConfirm()">Cancel</button>
+            <button class="btn-confirm-delete" onclick="confirmDelete()">Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// AUTH GUARD
+if (sessionStorage.getItem('gs_admin') !== 'true') {
+    window.location.href = 'admin-login.html';
+}
+document.getElementById('adminNameDisplay').textContent = sessionStorage.getItem('gs_admin_user') || 'Admin';
+
+function logout() {
+    sessionStorage.removeItem('gs_admin');
+    sessionStorage.removeItem('gs_admin_user');
+    window.location.href = 'admin-login.html';
+}
+
+/* ── Image error fallback ── */
+function imgErr(el) {
+    el.onerror = null;
+    const title = el.alt || 'Game';
+    el.src = `https://placehold.co/300x200/0f1318/d57454?text=${encodeURIComponent(title)}`;
+}
+
+// DEFAULT GAMES DATA
+const DEFAULT_GAMES = [
+    { id:'bgmi',            title:'BGMI',                     genre:'Battle Royale',        category:'battle-royale', platform:'Mobile / PC', storage:'8GB',  price:6999.99, img:'https://i.ytimg.com/vi/-ErnVg5aDag/hq720.jpg', featured:true,  inSlider:false, description:'Battlegrounds Mobile India — the ultimate mobile battle royale experience with 100 players dropping onto a massive map.' },
+    { id:'valorant',        title:'VALORANT',                 genre:'Tactical Shooter',     category:'fps-shooter',   platform:'PC',          storage:'16GB', price:0,       img:'https://wallpapers.com/images/hd/4k-hd-valorant-1m8v8h6l10gnss81.jpg', featured:true, inSlider:false, description:'Free-to-play 5v5 tactical hero shooter from Riot Games. Precise gunplay meets unique agent abilities.' },
+    { id:'cs2',             title:'Counter-Strike 2',         genre:'FPS',                  category:'fps-shooter',   platform:'PC',          storage:'8GB',  price:0,       img:'https://wallpapercave.com/wp/wp12803694.png', featured:true, inSlider:false, description:'The world\'s most iconic FPS returns with Source 2 engine upgrades.' },
+    { id:'cyberpunk',       title:'Cyberpunk 2077',           genre:'RPG / Action',         category:'rpg',           platform:'PC',          storage:'70GB', price:2999,    img:'https://c4.wallpaperflare.com/wallpaper/943/63/773/cyberpunk-2077-cyberpunk-video-games-wallpaper-preview.jpg', featured:true, inSlider:true, description:'Open-world action RPG set in the dark future of Night City.' },
+    { id:'eldenring',       title:'Elden Ring',               genre:'Action RPG',           category:'rpg',           platform:'PC',          storage:'60GB', price:3599,    img:'https://4kwallpapers.com/images/wallpapers/elden-ring-7680x4320-20173.jpg', featured:true, inSlider:true, description:'A massive open-world action RPG from FromSoftware and George R.R. Martin.' },
+    { id:'shadow-ninja',    title:'Shadow Ninja',             genre:'Action / Parkour',     category:'action',        platform:'PC',          storage:'4GB',  price:1499,    img:'https://images.wallpapersden.com/image/download/ninja-shadow-dark_bGZmbm6UmZqaraWkpJRmbmdlrWZlbWU.jpg', featured:false, inSlider:false, description:'Fast-paced ninja parkour action with fluid combat.' },
+    { id:'forza-horizon-6', title:'Forza Horizon 6',          genre:'Racing',               category:'racing',        platform:'PC',          storage:'100GB',price:3999,    img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkRyEPyYuoSnmbQxKf4fCgeMlYhcSqnHvHYQ&s', featured:true, inSlider:false, description:'The ultimate open-world racing experience across stunning global locations.' },
+    { id:'god-of-war',      title:'God of War Ragnarök',      genre:'Action Adventure',     category:'action',        platform:'PC',          storage:'90GB', price:4999,    img:'https://cdn.wallpapersafari.com/15/57/uPNyez.jpg', featured:true, inSlider:true, description:'Kratos and Atreus embark on an epic journey through the Nine Realms.' },
+    { id:'warframe',        title:'Warframe',                 genre:'Action RPG · Co-op',   category:'action',        platform:'PC',          storage:'35GB', price:0,       img:'https://store-images.s-microsoft.com/image/apps.38512.68123456111492710.a7282e70-8b85-41b8-9cdf-3abcdb6b4b35.2f760735-01c5-4de8-88d3-54bf4584f043', featured:true, inSlider:false, description:'Free-to-play co-op action RPG with deep customisation.' },
+    { id:'genshin-impact',  title:'Genshin Impact',           genre:'Open World RPG',       category:'rpg',           platform:'PC',          storage:'80GB', price:0,       img:'https://wallpaperaccess.com/full/12211659.jpg', featured:true, inSlider:false, description:'Open-world action RPG featuring a massive world to explore.' },
+    { id:'fortnite',        title:'Fortnite',                 genre:'Battle Royale',        category:'battle-royale', platform:'PC',          storage:'30GB', price:0,       img:'https://image.api.playstation.com/vulcan/ap/rnd/202603/2421/4244d47f72dffc0075a105f58e5d0bf0d3a4e6078f103a49.jpg', featured:true, inSlider:false, description:'The ever-evolving free battle royale with building mechanics.' },
+    { id:'apex-legends',    title:'Apex Legends',             genre:'Battle Royale · FPS',  category:'battle-royale', platform:'PC',          storage:'100GB',price:0,       img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSh3YdfwQ1MPGpDWclcS9c4n9XZtprMh-5hdw&s', featured:true, inSlider:false, description:'Squad-based battle royale with unique Legend abilities.' },
+    { id:'gta-v',           title:'GTA V',                   genre:'Open World / Action',  category:'action',        platform:'PC',          storage:'95GB', price:1999,    img:'https://upload.wikimedia.org/wikipedia/en/a/a5/Grand_Theft_Auto_V.png', featured:false, inSlider:false, description:'The sprawling open-world crime epic that redefined gaming.' },
+    { id:'witcher-3',       title:'The Witcher 3',            genre:'RPG / Open World',     category:'rpg',           platform:'PC',          storage:'50GB', price:2499,    img:'https://image.api.playstation.com/vulcan/ap/rnd/202211/0711/kh4MUIuMmHlktOHar3lROAqJ.png', featured:false, inSlider:false, description:'An award-winning open-world RPG with unparalleled storytelling.' },
+    { id:'red-dead-2',      title:'Red Dead Redemption 2',   genre:'Action / Adventure',   category:'action',        platform:'PC',          storage:'150GB',price:3499,    img:'https://upload.wikimedia.org/wikipedia/en/4/44/Red_Dead_Redemption_II.jpg', featured:false, inSlider:false, description:'Epic tale of life in America\'s unforgiving heartland.' },
+    { id:'dark-souls-3',    title:'Dark Souls III',           genre:'Action RPG',           category:'rpg',           platform:'PC',          storage:'25GB', price:1999,    img:'https://upload.wikimedia.org/wikipedia/en/8/8f/Dark_souls_3_logo.jpg', featured:false, inSlider:false, description:'The challenging masterpiece that defined an entire genre.' },
+    { id:'nfs-unbound',     title:'Need for Speed Unbound',  genre:'Racing',               category:'racing',        platform:'PC',          storage:'50GB', price:2499,    img:'https://upload.wikimedia.org/wikipedia/en/b/be/Need_for_Speed_Unbound_cover.jpg', featured:false, inSlider:false, description:'Street racing with style — unique art direction meets raw speed.' },
+    { id:'rocket-league',   title:'Rocket League',           genre:'Sports / Racing',      category:'sports',        platform:'PC',          storage:'20GB', price:0,       img:'https://upload.wikimedia.org/wikipedia/en/a/a5/Rocket_League_coverart.jpg', featured:false, inSlider:false, description:'Free-to-play soccer with rocket-powered cars.' },
+    { id:'fifa-25',         title:'EA Sports FC 25',         genre:'Sports / Football',    category:'sports',        platform:'PC',          storage:'50GB', price:3999,    img:'https://upload.wikimedia.org/wikipedia/en/8/82/EA_Sports_FC_25_Cover.jpg', featured:false, inSlider:false, description:'The world\'s #1 football simulation with Ultimate Team.' },
+    { id:'nba-2k25',        title:'NBA 2K25',                genre:'Sports / Basketball',  category:'sports',        platform:'PC',          storage:'150GB',price:3499,    img:'https://upload.wikimedia.org/wikipedia/en/thumb/4/4e/NBA_2K25_Cover.jpg/220px-NBA_2K25_Cover.jpg', featured:false, inSlider:false, description:'The most authentic basketball simulation, rebuilt for modern hardware.' },
+    { id:'portal-2',        title:'Portal 2',                genre:'Puzzle / Adventure',   category:'puzzle',        platform:'PC',          storage:'8GB',  price:999,     img:'https://upload.wikimedia.org/wikipedia/en/f/f9/Portal2cover.jpg', featured:false, inSlider:false, description:'Award-winning puzzle game with cooperative play and mind-bending portals.' },
+    { id:'hollow-knight',   title:'Hollow Knight',           genre:'Metroidvania / Action',category:'puzzle',        platform:'PC',          storage:'9GB',  price:799,     img:'https://upload.wikimedia.org/wikipedia/commons/c/c5/Hollow_knight_silksong_logo.png', featured:false, inSlider:false, description:'Atmospheric action-adventure set in a vast, ruined kingdom of insects.' },
+    { id:'minecraft',       title:'Minecraft',               genre:'Sandbox / Survival',   category:'simulation',    platform:'PC',          storage:'30GB', price:1499,    img:'https://upload.wikimedia.org/wikipedia/en/5/51/Minecraft_cover.png', featured:false, inSlider:false, description:'Infinite worlds. Endless creativity. Build, survive, explore.' },
+    { id:'stardew-valley',  title:'Stardew Valley',          genre:'Farming / RPG',        category:'simulation',    platform:'PC',          storage:'2GB',  price:799,     img:'https://upload.wikimedia.org/wikipedia/en/f/fd/Logo_of_Stardew_Valley.png', featured:false, inSlider:false, description:'Wholesome farming RPG where you build the life you\'ve always wanted.' },
+    { id:'overwatch-2',     title:'Overwatch 2',             genre:'Hero Shooter',         category:'fps-shooter',   platform:'PC',          storage:'50GB', price:0,       img:'https://upload.wikimedia.org/wikipedia/en/4/4a/Overwatch2.jpg', featured:false, inSlider:false, description:'Free-to-play team-based hero shooter from Blizzard.' },
+];
+
+// ============================================================
+// DATA LAYER
+// ============================================================
+function loadGames() {
+    const stored = localStorage.getItem('gs_games');
+    return stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(DEFAULT_GAMES));
+}
+function saveGames(games) {
+    localStorage.setItem('gs_games', JSON.stringify(games));
+}
+function loadSlider() {
+    const games = loadGames();
+    return games.filter(g => g.inSlider).map(g => g.id);
+}
+
+let games = loadGames();
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+const pageTitles = { dashboard:'Dashboard', games:'Games Manager', slider:'Hero Slider' };
+
+function showPage(page, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-'+page).classList.add('active');
+    document.getElementById('pageTitleDisplay').textContent = pageTitles[page] || page;
+    if (el) el.classList.add('active');
+    if (page === 'games')   renderGamesTable();
+    if (page === 'slider')  renderSliderPage();
+    if (page === 'dashboard') renderDashboard();
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+    games = loadGames();
+    const total     = games.length;
+    const freeCount = games.filter(g => g.price === 0).length;
+    const featured  = games.filter(g => g.featured).length;
+    const sliderCt  = games.filter(g => g.inSlider).length;
+    const cats      = [...new Set(games.map(g => g.category))].length;
+
+    document.getElementById('statsGrid').innerHTML = `
+        <div class="stat-card orange"><div class="stat-value">${total}</div><div class="stat-label">Total Games</div><i class="bi bi-controller stat-icon"></i></div>
+        <div class="stat-card green"><div class="stat-value">${freeCount}</div><div class="stat-label">Free Games</div><i class="bi bi-gift stat-icon"></i></div>
+        <div class="stat-card blue"><div class="stat-value">${featured}</div><div class="stat-label">Featured</div><i class="bi bi-star-fill stat-icon"></i></div>
+        <div class="stat-card yellow"><div class="stat-value">${sliderCt}</div><div class="stat-label">Slider Games</div><i class="bi bi-images stat-icon"></i></div>
+    `;
+
+    document.getElementById('nav-games-count').textContent = total;
+    document.getElementById('nav-slider-count').textContent = sliderCt;
+
+    // Recent 5
+    const recent = [...games].slice(-5).reverse();
+    document.getElementById('dashboardRecentTable').innerHTML = recent.map(g => `
+        <tr>
+            <td><img src="${g.img}" class="game-thumb" alt="${g.title}" onerror="imgErr(this)"></td>
+            <td class="game-title-cell">${g.title}</td>
+            <td><span class="badge-cat ${g.category}">${g.category.replace('-',' ')}</span></td>
+            <td class="${g.price===0?'price-cell free':'price-cell'}">${g.price===0?'FREE':'₹'+g.price.toLocaleString('en-IN')}</td>
+            <td class="actions-cell">
+                <button class="btn-sm-outline" onclick="openEditModal('${g.id}')"><i class="bi bi-pencil"></i> Edit</button>
+                <button class="btn-danger-sm" onclick="askDelete('${g.id}')"><i class="bi bi-trash3"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ============================================================
+// GAMES TABLE
+// ============================================================
+function renderGamesTable() {
+    games = loadGames();
+    const search = (document.getElementById('gameSearchInput')?.value || '').toLowerCase();
+    const cat    = document.getElementById('gameCatFilter')?.value || '';
+    const price  = document.getElementById('gamePriceFilter')?.value || '';
+
+    let filtered = games.filter(g => {
+        const matchSearch = !search || g.title.toLowerCase().includes(search) || g.genre.toLowerCase().includes(search);
+        const matchCat    = !cat    || g.category === cat;
+        const matchPrice  = !price  || (price === 'free' ? g.price===0 : g.price>0);
+        return matchSearch && matchCat && matchPrice;
+    });
+
+    document.getElementById('nav-games-count').textContent = games.length;
+
+    if (filtered.length === 0) {
+        document.getElementById('gamesTableBody').innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="bi bi-search"></i>No games match your filters.</div></td></tr>`;
+        return;
+    }
+    document.getElementById('gamesTableBody').innerHTML = filtered.map(g => `
+        <tr>
+            <td><img src="${g.img}" class="game-thumb" alt="${g.title}" onerror="imgErr(this)"></td>
+            <td class="game-title-cell">${g.title}<div style="font-size:.72rem;color:var(--dim);margin-top:2px;">${g.genre}</div></td>
+            <td><span class="badge-cat ${g.category}">${g.category.replace(/-/g,' ')}</span></td>
+            <td style="font-size:.82rem;">${g.platform||'—'}</td>
+            <td class="${g.price===0?'price-cell free':'price-cell'}">${g.price===0?'FREE':'₹'+g.price.toLocaleString('en-IN')}</td>
+            <td style="white-space:nowrap;">
+                ${g.featured?`<span class="badge-featured"><i class="bi bi-star-fill"></i> Featured</span> `:''}
+                ${g.inSlider?`<span class="badge-slider"><i class="bi bi-images"></i> Slider</span>`:''}
+            </td>
+            <td class="actions-cell">
+                <button class="btn-sm-outline" onclick="openEditModal('${g.id}')"><i class="bi bi-pencil"></i> Edit</button>
+                <button class="btn-danger-sm" onclick="askDelete('${g.id}')"><i class="bi bi-trash3"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ============================================================
+// ADD / EDIT MODAL
+// ============================================================
+function openAddModal() {
+    document.getElementById('modalTitle').textContent = 'Add New Game';
+    document.getElementById('editGameId').value = '';
+    document.getElementById('f-title').value   = '';
+    document.getElementById('f-genre').value   = '';
+    document.getElementById('f-category').value= 'action';
+    document.getElementById('f-platform').value= 'PC';
+    document.getElementById('f-price').value   = '0';
+    document.getElementById('f-storage').value = '';
+    document.getElementById('f-img').value     = '';
+    document.getElementById('imgPreviewWrap').style.display = 'none';
+    document.getElementById('f-desc').value    = '';
+    document.getElementById('f-id').value      = '';
+    document.getElementById('f-featured').checked  = false;
+    document.getElementById('f-inSlider').checked  = false;
+    document.getElementById('gameModal').classList.add('show');
+}
+
+function openEditModal(id) {
+    games = loadGames();
+    const g = games.find(x => x.id === id);
+    if (!g) return;
+    document.getElementById('modalTitle').textContent = 'Edit Game';
+    document.getElementById('editGameId').value = g.id;
+    document.getElementById('f-title').value    = g.title;
+    document.getElementById('f-genre').value    = g.genre;
+    document.getElementById('f-category').value = g.category;
+    document.getElementById('f-platform').value = g.platform || '';
+    document.getElementById('f-price').value    = g.price;
+    document.getElementById('f-storage').value  = g.storage || '';
+    document.getElementById('f-img').value      = g.img;
+    previewImg(g.img);
+    document.getElementById('f-desc').value     = g.description || '';
+    document.getElementById('f-id').value       = g.id;
+    document.getElementById('f-featured').checked  = !!g.featured;
+    document.getElementById('f-inSlider').checked  = !!g.inSlider;
+    document.getElementById('gameModal').classList.add('show');
+}
+
+function closeModal() {
+    document.getElementById('gameModal').classList.remove('show');
+}
+
+/* ── Image preview ── */
+function previewImg(url) {
+    const wrap = document.getElementById('imgPreviewWrap');
+    const img  = document.getElementById('imgPreview');
+    if (!url || url.length < 10) { wrap.style.display = 'none'; return; }
+    img.onerror = () => { wrap.style.display = 'none'; };
+    img.onload  = () => { wrap.style.display = 'block'; };
+    img.src = url;
+}
+
+function slugify(str) {
+    return str.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+}
+
+function saveGame() {
+    const title = document.getElementById('f-title').value.trim();
+    if (!title) { showToast('Game title is required','error'); return; }
+    const img   = document.getElementById('f-img').value.trim();
+    if (!img)   { showToast('Cover image URL is required','error'); return; }
+
+    games = loadGames();
+    const editId = document.getElementById('editGameId').value;
+    const newId  = document.getElementById('f-id').value.trim() || slugify(title);
+    const price  = parseFloat(document.getElementById('f-price').value) || 0;
+
+    const gameData = {
+        id:          editId || newId,
+        title,
+        genre:       document.getElementById('f-genre').value.trim(),
+        category:    document.getElementById('f-category').value,
+        platform:    document.getElementById('f-platform').value.trim(),
+        price,
+        storage:     document.getElementById('f-storage').value.trim(),
+        img,
+        description: document.getElementById('f-desc').value.trim(),
+        featured:    document.getElementById('f-featured').checked,
+        inSlider:    document.getElementById('f-inSlider').checked,
+    };
+
+    if (editId) {
+        const idx = games.findIndex(g => g.id === editId);
+        if (idx >= 0) games[idx] = { ...games[idx], ...gameData };
+        showToast(`"${title}" updated successfully!`, 'success');
+    } else {
+        // Check duplicate id
+        if (games.find(g => g.id === gameData.id)) { gameData.id += '-' + Date.now(); }
+        games.push(gameData);
+        showToast(`"${title}" added to the store!`, 'success');
+    }
+
+    // Enforce max 5 slider items
+    const sliderGames = games.filter(g => g.inSlider);
+    if (sliderGames.length > 5) {
+        games.forEach(g => { if (g.id !== gameData.id) g.inSlider = false; });
+        showToast('Slider already at max 5 — removed other slides', 'warn');
+    }
+
+    saveGames(games);
+    closeModal();
+    renderGamesTable();
+    renderDashboard();
+}
+
+// ============================================================
+// DELETE
+// ============================================================
+let pendingDeleteId = null;
+
+function askDelete(id) {
+    games = loadGames();
+    const g = games.find(x => x.id === id);
+    pendingDeleteId = id;
+    document.getElementById('confirmMsg').textContent = `Are you sure you want to delete "${g?.title || id}"? This cannot be undone.`;
+    document.getElementById('confirmOverlay').classList.add('show');
+}
+function closeConfirm() {
+    pendingDeleteId = null;
+    document.getElementById('confirmOverlay').classList.remove('show');
+}
+function confirmDelete() {
+    if (!pendingDeleteId) return;
+    games = loadGames();
+    games = games.filter(g => g.id !== pendingDeleteId);
+    saveGames(games);
+    closeConfirm();
+    showToast('Game deleted successfully.', 'info');
+    renderGamesTable();
+    renderDashboard();
+    pendingDeleteId = null;
+}
+
+// ============================================================
+// SLIDER MANAGER
+// ============================================================
+function renderSliderPage() {
+    games = loadGames();
+    renderSliderActive();
+    renderSliderAvailable();
+}
+
+function renderSliderActive() {
+    games = loadGames();
+    const sliderGames = games.filter(g => g.inSlider);
+    const list = document.getElementById('sliderActiveList');
+    const countBadge = document.getElementById('sliderCountBadge');
+    const maxNote    = document.getElementById('sliderMaxNote');
+    document.getElementById('nav-slider-count').textContent = sliderGames.length;
+    countBadge.textContent = `${sliderGames.length} / 5`;
+    maxNote.style.display = sliderGames.length >= 5 ? 'block' : 'none';
+
+    if (sliderGames.length === 0) {
+        list.innerHTML = `<div class="empty-state" style="padding:40px 20px;"><i class="bi bi-images"></i>No slides yet. Add games from the right panel.</div>`;
+        return;
+    }
+    list.innerHTML = sliderGames.map((g, i) => `
+        <div class="slider-item" id="si-${g.id}">
+            <div class="order-badge">${i+1}</div>
+            <img src="${g.img}" class="slider-thumb" alt="${g.title}" onerror="imgErr(this)">
+            <div class="slider-info">
+                <div class="slider-game-title">${g.title}</div>
+                <div class="slider-game-genre">${g.genre}</div>
+            </div>
+            <button class="remove-slider-btn" onclick="removeFromSlider('${g.id}')" title="Remove from slider">
+                <i class="bi bi-x-circle-fill"></i>
+            </button>
+        </div>
+    `).join('');
+}
+
+function renderSliderAvailable() {
+    games = loadGames();
+    const search = (document.getElementById('sliderSearchInput')?.value || '').toLowerCase();
+    const notInSlider = games.filter(g => !g.inSlider && (!search || g.title.toLowerCase().includes(search) || g.genre.toLowerCase().includes(search)));
+    const sliderCount = games.filter(g => g.inSlider).length;
+    const list = document.getElementById('sliderAvailableList');
+
+    if (notInSlider.length === 0) {
+        list.innerHTML = `<div class="empty-state" style="padding:30px 20px;"><i class="bi bi-search"></i>No games found.</div>`;
+        return;
+    }
+    list.innerHTML = notInSlider.map(g => `
+        <div class="available-item">
+            <img src="${g.img}" class="slider-thumb" alt="${g.title}" onerror="imgErr(this)">
+            <div class="slider-info">
+                <div class="slider-game-title">${g.title}</div>
+                <div class="slider-game-genre">${g.genre}</div>
+            </div>
+            <button class="add-slider-btn" onclick="addToSlider('${g.id}')" ${sliderCount>=5?'disabled title="Max 5 reached"':''}>
+                + Add
+            </button>
+        </div>
+    `).join('');
+}
+
+function addToSlider(id) {
+    games = loadGames();
+    const sliderCount = games.filter(g => g.inSlider).length;
+    if (sliderCount >= 5) { showToast('Maximum 5 slider items reached.','warn'); return; }
+    const g = games.find(x => x.id === id);
+    if (g) { g.inSlider = true; saveGames(games); showToast(`"${g.title}" added to slider!`,'success'); }
+    renderSliderPage();
+}
+
+function removeFromSlider(id) {
+    games = loadGames();
+    const g = games.find(x => x.id === id);
+    if (g) { g.inSlider = false; saveGames(games); showToast(`"${g.title}" removed from slider.`,'info'); }
+    renderSliderPage();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, type='success') {
+    const icons = { success:'bi-check-circle-fill', error:'bi-x-circle-fill', info:'bi-info-circle-fill', warn:'bi-exclamation-triangle-fill' };
+    const colors = { success:'var(--success)', error:'var(--danger)', info:'var(--info)', warn:'var(--warn)' };
+    const wrap = document.getElementById('toastWrap');
+    const el = document.createElement('div');
+    el.className = `toast-item ${type}`;
+    el.innerHTML = `<i class="bi ${icons[type]||icons.info}" style="color:${colors[type]};font-size:1rem;flex-shrink:0;"></i> ${msg}`;
+    wrap.appendChild(el);
+    requestAnimationFrame(() => { requestAnimationFrame(() => el.classList.add('show')); });
+    setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 400); }, 3200);
+}
+
+// ============================================================
+// CLOSE MODAL ON OVERLAY CLICK
+// ============================================================
+document.getElementById('gameModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+document.getElementById('confirmOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeConfirm();
+});
+
+// ============================================================
+// INIT
+// ============================================================
+renderDashboard();
+</script>
+</body>
+</html>

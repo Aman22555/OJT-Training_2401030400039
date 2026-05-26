@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameStore - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bs-primary: #d57454;
+            --bs-primary-rgb: 213,116,84;
+            --accent: #d57454;
+            --bg: #0a0c0e;
+            --card: #12151a;
+            --border: #1e2228;
+            --text: #e8e0d6;
+            --dim: #7a8090;
+        }
+        body { font-family:'Rajdhani',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; flex-direction:column; }
+
+        .navbar { background-color:#0d0f12 !important; border-bottom:1px solid var(--border); }
+        .navbar-brand { font-family:'Barlow Condensed',sans-serif; font-size:1.6rem; font-weight:900; color:var(--accent)!important; letter-spacing:2px; text-transform:uppercase; }
+        .nav-link { font-weight:600; font-size:.85rem; text-transform:uppercase; letter-spacing:1px; color:var(--dim)!important; transition:color .2s; padding:8px 10px!important; }
+        .nav-link:hover, .nav-link.active-cat { color:var(--accent)!important; }
+        .nav-link.active-cat { border-bottom:2px solid var(--accent); }
+        .dropdown-menu { background:#0d1017; border:1px solid var(--border); border-radius:6px; padding:6px; min-width:200px; }
+        .dropdown-item { color:var(--dim); font-family:'Rajdhani',sans-serif; font-weight:600; font-size:.85rem; text-transform:uppercase; letter-spacing:.5px; border-radius:4px; padding:8px 14px; transition:all .15s; }
+        .dropdown-item:hover { background:rgba(213,116,84,.1); color:var(--accent); }
+        .dropdown-item i { width:20px; margin-right:6px; }
+
+        .admin-nav-link {
+            display:inline-flex; align-items:center; gap:5px;
+            padding:6px 14px!important; border-radius:5px;
+            background:rgba(213,116,84,.1); border:1px solid rgba(213,116,84,.3);
+            color:var(--accent)!important; font-size:.8rem!important;
+        }
+        .admin-nav-link:hover { background:rgba(213,116,84,.2)!important; }
+
+        .cat-tabs-wrap {
+            background:#0b0d10;
+            border-bottom:1px solid var(--border);
+            padding:0 16px;
+            overflow-x:auto;
+            white-space:nowrap;
+            scrollbar-width:none;
+        }
+        .cat-tabs-wrap::-webkit-scrollbar { display:none; }
+        .cat-tab {
+            display:inline-flex; align-items:center; gap:6px;
+            padding:10px 18px;
+            font-family:'Barlow Condensed',sans-serif; font-size:.85rem; font-weight:700;
+            text-transform:uppercase; letter-spacing:1.5px;
+            color:var(--dim); cursor:pointer;
+            border-bottom:3px solid transparent;
+            transition:all .2s; white-space:nowrap;
+            user-select:none;
+        }
+        .cat-tab:hover { color:var(--text); }
+        .cat-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+
+        .btn-primary { background-color:var(--accent); border-color:var(--accent); font-weight:700; font-size:.9rem; text-transform:uppercase; letter-spacing:1px; border-radius:4px; }
+        .btn-primary:hover { background-color:#b55f42; border-color:#b55f42; }
+
+        .carousel-item { height:420px; }
+        .carousel-item img { width:100%; height:100%; object-fit:cover; filter:brightness(.55); }
+        .carousel-caption { bottom:40px; left:5%; right:auto; text-align:left; }
+        .carousel-caption h3 { font-family:'Barlow Condensed',sans-serif; font-size:2.8rem; font-weight:900; color:var(--text); text-transform:uppercase; line-height:1; margin-bottom:8px; text-shadow:0 2px 8px rgba(0,0,0,.5); }
+        .carousel-caption .caption-genre { font-size:.75rem; text-transform:uppercase; letter-spacing:3px; color:rgba(232,224,214,.7); margin-bottom:10px; }
+        .price-tag { display:inline-block; background:var(--accent); color:white; padding:5px 16px; font-weight:700; font-size:.95rem; border-radius:3px; }
+        .price-tag.free { background:#27ae60; }
+        .carousel-caption .btn-shop { margin-top:12px; display:inline-flex; align-items:center; gap:8px; padding:10px 22px; background:var(--accent); color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; border:none; border-radius:4px; cursor:pointer; text-decoration:none; transition:background .2s; }
+        .carousel-caption .btn-shop:hover { background:#b55f42; }
+
+        .section-title { font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; font-weight:800; text-transform:uppercase; letter-spacing:2px; margin-bottom:24px; padding-left:14px; border-left:3px solid var(--accent); display:flex; align-items:center; gap:10px; }
+        .section-count { font-size:.75rem; background:rgba(213,116,84,.15); border:1px solid rgba(213,116,84,.3); color:var(--accent); padding:2px 10px; border-radius:10px; letter-spacing:1px; }
+
+        .card { background:var(--card); border:1px solid var(--border); transition:transform .2s,border-color .2s; cursor:pointer; text-decoration:none; color:inherit; }
+        .card:hover { transform:translateY(-4px); border-color:var(--accent); }
+        .card-img-top { height:160px; object-fit:cover; }
+        .card-title { font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:700; text-transform:uppercase; margin-bottom:4px; }
+        .card-footer { background:#0d0f12; border-top:1px solid var(--border); }
+        .card-price { font-weight:700; color:var(--accent); font-size:1rem; }
+        .card-price.free { color:#27ae60; }
+        .buy-btn-sm { background:var(--accent); color:white; border:none; padding:6px 16px; font-weight:700; font-size:.85rem; text-transform:uppercase; text-decoration:none; transition:background .2s; }
+        .buy-btn-sm:hover { background:#b55f42; color:white; }
+        .buy-btn-sm.free-btn { background:#27ae60; }
+        .buy-btn-sm.free-btn:hover { background:#1e8449; }
+
+        .badge-free { background:#27ae60; color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; padding:2px 8px; border-radius:3px; display:inline-block; }
+        .badge-cat-pill { display:inline-block; padding:1px 8px; border-radius:3px; font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-left:4px; }
+        .badge-cat-pill.battle-royale { background:rgba(213,116,84,.15); color:var(--accent); }
+        .badge-cat-pill.fps-shooter   { background:rgba(91,156,246,.15); color:#5b9cf6; }
+        .badge-cat-pill.rpg           { background:rgba(232,184,75,.15); color:#e8b84b; }
+        .badge-cat-pill.action        { background:rgba(224,82,82,.15); color:#e05252; }
+        .badge-cat-pill.racing        { background:rgba(62,201,122,.15); color:#3ec97a; }
+        .badge-cat-pill.sports        { background:rgba(62,201,122,.15); color:#3ec97a; }
+        .badge-cat-pill.puzzle        { background:rgba(165,110,255,.15); color:#a56eff; }
+        .badge-cat-pill.simulation    { background:rgba(91,156,246,.15); color:#5b9cf6; }
+
+        .game-table-container { border:1px solid var(--border); border-radius:6px; background:var(--card); }
+        .table-custom { margin-bottom:0; color:var(--dim); }
+        .table-custom th { background-color:hsl(220,13%,9%); color:var(--accent); font-size:.75rem; text-transform:uppercase; letter-spacing:1.5px; border-bottom:none; padding:14px 16px; }
+        .table-custom td { background-color:var(--card); color:var(--dim); border-bottom:1px solid var(--border); padding:12px 16px; vertical-align:middle; }
+        .table-custom tr { cursor:pointer; transition:background .2s; }
+        .table-custom tr:hover td { background-color:#181c22; color:var(--text); }
+        .game-link { color:var(--accent); font-weight:700; text-decoration:none; font-size:1rem; }
+        .game-link:hover { color:rgb(231,204,72); }
+        .free-price { color:#27ae60!important; font-weight:800; }
+        .dl-btn-sm { background:#27ae60; color:white; border:none; padding:6px 16px; font-weight:700; font-size:.85rem; text-transform:uppercase; transition:background .2s; cursor:pointer; }
+        .dl-btn-sm:hover { background:#1e8449; }
+        .no-results { text-align:center; padding:60px 20px; color:var(--dim); font-family:'Barlow Condensed',sans-serif; font-size:1.4rem; letter-spacing:2px; text-transform:uppercase; }
+
+        footer { text-align:center; padding:30px; color:var(--dim); font-size:.8rem; border-top:1px solid var(--border); margin-top:auto; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand" href="Home.html"><i class="bi bi-controller me-1"></i> GameStore</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="Home.html"><i class="bi bi-house-fill me-1"></i> Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-grid me-1"></i> Browse
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="filterCategory('all')"><i class="bi bi-grid-3x3-gap"></i> All Games</a></li>
+                        <li><hr class="dropdown-divider" style="border-color:var(--border);"></li>
+                        <li><a class="dropdown-item" href="#" onclick="filterCategory('battle-royale')"><i class="bi bi-crosshair2"></i> Battle Royale</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="filterCategory('fps-shooter')"><i class="bi bi-bullseye"></i> FPS / Shooter</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="filterCategory('rpg')"><i class="bi bi-map"></i> RPG</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="filterCategory('action')"><i class="bi bi-lightning-fill"></i> Action / Adventure</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="filterCategory('racing')"><i class="bi bi-speedometer2"></i> Racing</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="filterCategory('sports')"><i class="bi bi-trophy-fill"></i> Sports</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="filterCategory('puzzle')"><i class="bi bi-puzzle"></i> Puzzle</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="filterCategory('simulation')"><i class="bi bi-globe2"></i> Simulation</a></li>
+                        <li><hr class="dropdown-divider" style="border-color:var(--border);"></li>
+                        <li><a class="dropdown-item" href="#" onclick="filterCategory('free')" style="color:#3ec97a;"><i class="bi bi-gift-fill" style="color:#3ec97a;"></i> Free to Play</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="filterCategory('battle-royale')"><i class="bi bi-crosshair2 me-1"></i> Battle Royale</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="filterCategory('fps-shooter')"><i class="bi bi-bullseye me-1"></i> FPS</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="filterCategory('rpg')"><i class="bi bi-map me-1"></i> RPG</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="filterCategory('racing')"><i class="bi bi-speedometer2 me-1"></i> Racing</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="filterCategory('sports')"><i class="bi bi-trophy me-1"></i> Sports</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="filterCategory('free')" style="color:#3ec97a!important;"><i class="bi bi-gift me-1"></i> Free</a></li>
+            </ul>
+            <div class="me-lg-3 mb-3 mb-lg-0 position-relative" role="search" style="max-width:260px;width:100%;">
+                <div class="d-flex">
+                    <input id="searchInput" class="form-control me-2 text-bg-dark border-secondary" type="search" placeholder="Search games..." autocomplete="off">
+                    <button id="searchBtn" class="btn btn-primary flex-shrink-0" type="button">Go</button>
+                </div>
+                <ul id="searchDropdown" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:#12151a;border:1px solid var(--accent);border-radius:6px;list-style:none;margin:0;padding:4px 0;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.6);max-height:320px;overflow-y:auto;"></ul>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="login.html" class="btn btn-primary">Login</a>
+                <a href="admin-login.html" id="adminNavBtn" class="nav-link admin-nav-link" style="display:none;">
+                    <i class="bi bi-shield-check"></i> Admin
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="cat-tabs-wrap" id="catTabsWrap">
+    <span class="cat-tab active" data-cat="all"   onclick="filterCategory('all')"><i class="bi bi-grid-3x3-gap"></i> All</span>
+    <span class="cat-tab" data-cat="battle-royale" onclick="filterCategory('battle-royale')"><i class="bi bi-crosshair2"></i> Battle Royale</span>
+    <span class="cat-tab" data-cat="fps-shooter"   onclick="filterCategory('fps-shooter')"><i class="bi bi-bullseye"></i> FPS / Shooter</span>
+    <span class="cat-tab" data-cat="rpg"           onclick="filterCategory('rpg')"><i class="bi bi-map"></i> RPG</span>
+    <span class="cat-tab" data-cat="action"        onclick="filterCategory('action')"><i class="bi bi-lightning-fill"></i> Action</span>
+    <span class="cat-tab" data-cat="racing"        onclick="filterCategory('racing')"><i class="bi bi-speedometer2"></i> Racing</span>
+    <span class="cat-tab" data-cat="sports"        onclick="filterCategory('sports')"><i class="bi bi-trophy-fill"></i> Sports</span>
+    <span class="cat-tab" data-cat="puzzle"        onclick="filterCategory('puzzle')"><i class="bi bi-puzzle"></i> Puzzle</span>
+    <span class="cat-tab" data-cat="simulation"    onclick="filterCategory('simulation')"><i class="bi bi-globe2"></i> Simulation</span>
+    <span class="cat-tab" data-cat="free"          onclick="filterCategory('free')" style="color:#3ec97a;"><i class="bi bi-gift-fill"></i> Free</span>
+</div>
+
+<div class="container my-3" id="carouselWrap">
+    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators" id="carouselIndicators"></div>
+        <div class="carousel-inner rounded border border-secondary" id="carouselInner"></div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="container mt-4 mb-0" id="activeCatHeader" style="display:none;">
+    <div class="d-flex align-items-center justify-content-between">
+        <div id="activeCatTitle" class="section-title"></div>
+        <button class="btn btn-sm btn-outline-secondary" onclick="filterCategory('all')" style="font-size:.78rem;text-transform:uppercase;letter-spacing:1px;">
+            <i class="bi bi-x me-1"></i> Clear Filter
+        </button>
+    </div>
+</div>
+
+<div class="container my-4" id="featured-section">
+    <div class="section-title">
+        Featured Games <span class="section-count" id="featuredCount">0</span>
+    </div>
+    <div class="row g-4" id="featuredCards"></div>
+</div>
+
+<div class="container my-5" id="allgames-section">
+    <div class="section-title">
+        All Games <span class="section-count" id="allGamesCount">0</span>
+    </div>
+    <div class="game-table-container table-responsive">
+        <table class="table table-custom align-middle text-start mb-0">
+            <thead>
+                <tr>
+                    <th>Game Title</th>
+                    <th>Genre</th>
+                    <th>Platform</th>
+                    <th>Storage</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="allGamesTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="noResultsBanner" class="no-results" style="display:none;">
+    <i class="bi bi-search" style="font-size:2.5rem;color:var(--accent);display:block;margin-bottom:12px;"></i>
+    No games found for "<span id="noResultsTerm"></span>"
+</div>
+
+<footer>
+    © 2025 GameStore. All rights reserved. · All prices in INR.
+    <span style="margin-left:16px;">
+        <a href="admin-login.html" style="color:var(--dim);text-decoration:none;font-size:.72rem;opacity:.5;">Admin Panel</a>
+    </span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ── Image error fallback ── */
+function imgErr(el) {
+    el.onerror = null;
+    const title = el.alt || 'Game';
+    el.src = `https://placehold.co/400x225/12151a/d57454?text=${encodeURIComponent(title)}`;
+}
+
+const DEFAULT_GAMES = [
+    { id:'bgmi',            title:'BGMI',                     genre:'Battle Royale',        category:'battle-royale', platform:'Mobile / PC', storage:'8GB',  price:6999.99, img:'https://i.ytimg.com/vi/-ErnVg5aDag/hq720.jpg', featured:true,  inSlider:false },
+    { id:'valorant',        title:'VALORANT',                 genre:'Tactical Shooter',     category:'fps-shooter',   platform:'PC',          storage:'16GB', price:0,       img:'https://wallpapers.com/images/hd/4k-hd-valorant-1m8v8h6l10gnss81.jpg', featured:true, inSlider:false },
+    { id:'cs2',             title:'Counter-Strike 2',         genre:'FPS',                  category:'fps-shooter',   platform:'PC',          storage:'8GB',  price:0,       img:'https://wallpapercave.com/wp/wp12803694.png', featured:true, inSlider:false },
+    { id:'cyberpunk',       title:'Cyberpunk 2077',           genre:'RPG / Action',         category:'rpg',           platform:'PC',          storage:'70GB', price:2999,    img:'https://c4.wallpaperflare.com/wallpaper/943/63/773/cyberpunk-2077-cyberpunk-video-games-wallpaper-preview.jpg', featured:true, inSlider:true },
+    { id:'eldenring',       title:'Elden Ring',               genre:'Action RPG',           category:'rpg',           platform:'PC',          storage:'60GB', price:3599,    img:'https://4kwallpapers.com/images/wallpapers/elden-ring-7680x4320-20173.jpg', featured:true, inSlider:true },
+    { id:'shadow-ninja',    title:'Shadow Ninja',             genre:'Action / Parkour',     category:'action',        platform:'PC',          storage:'4GB',  price:1499,    img:'https://images.wallpapersden.com/image/download/ninja-shadow-dark_bGZmbm6UmZqaraWkpJRmbmdlrWZlbWU.jpg', featured:false, inSlider:false },
+    { id:'forza-horizon-6', title:'Forza Horizon 6',          genre:'Racing',               category:'racing',        platform:'PC',          storage:'100GB',price:3999,    img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkRyEPyYuoSnmbQxKf4fCgeMlYhcSqnHvHYQ&s', featured:true, inSlider:false },
+    { id:'god-of-war',      title:'God of War Ragnarök',      genre:'Action Adventure',     category:'action',        platform:'PC',          storage:'90GB', price:4999,    img:'https://cdn.wallpapersafari.com/15/57/uPNyez.jpg', featured:true, inSlider:true },
+    { id:'warframe',        title:'Warframe',                 genre:'Action RPG · Co-op',   category:'action',        platform:'PC',          storage:'35GB', price:0,       img:'https://store-images.s-microsoft.com/image/apps.38512.68123456111492710.a7282e70-8b85-41b8-9cdf-3abcdb6b4b35.2f760735-01c5-4de8-88d3-54bf4584f043', featured:true, inSlider:false },
+    { id:'genshin-impact',  title:'Genshin Impact',           genre:'Open World RPG',       category:'rpg',           platform:'PC',          storage:'80GB', price:0,       img:'https://wallpaperaccess.com/full/12211659.jpg', featured:true, inSlider:false },
+    { id:'fortnite',        title:'Fortnite',                 genre:'Battle Royale',        category:'battle-royale', platform:'PC',          storage:'30GB', price:0,       img:'https://image.api.playstation.com/vulcan/ap/rnd/202603/2421/4244d47f72dffc0075a105f58e5d0bf0d3a4e6078f103a49.jpg', featured:true, inSlider:false },
+    { id:'apex-legends',    title:'Apex Legends',             genre:'Battle Royale · FPS',  category:'battle-royale', platform:'PC',          storage:'100GB',price:0,       img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSh3YdfwQ1MPGpDWclcS9c4n9XZtprMh-5hdw&s', featured:true, inSlider:false },
+    { id:'gta-v',           title:'GTA V',                   genre:'Open World / Action',  category:'action',        platform:'PC',          storage:'95GB', price:1999,    img:'https://upload.wikimedia.org/wikipedia/en/a/a5/Grand_Theft_Auto_V.png', featured:false, inSlider:false },
+    { id:'witcher-3',       title:'The Witcher 3',            genre:'RPG / Open World',     category:'rpg',           platform:'PC',          storage:'50GB', price:2499,    img:'https://image.api.playstation.com/vulcan/ap/rnd/202211/0711/kh4MUIuMmHlktOHar3lROAqJ.png', featured:false, inSlider:false },
+    { id:'red-dead-2',      title:'Red Dead Redemption 2',   genre:'Action / Adventure',   category:'action',        platform:'PC',          storage:'150GB',price:3499,    img:'https://upload.wikimedia.org/wikipedia/en/4/44/Red_Dead_Redemption_II.jpg', featured:false, inSlider:false },
+    { id:'dark-souls-3',    title:'Dark Souls III',           genre:'Action RPG',           category:'rpg',           platform:'PC',          storage:'25GB', price:1999,    img:'https://upload.wikimedia.org/wikipedia/en/8/8f/Dark_souls_3_logo.jpg', featured:false, inSlider:false },
+    { id:'nfs-unbound',     title:'Need for Speed Unbound',  genre:'Racing',               category:'racing',        platform:'PC',          storage:'50GB', price:2499,    img:'https://upload.wikimedia.org/wikipedia/en/b/be/Need_for_Speed_Unbound_cover.jpg', featured:false, inSlider:false },
+    { id:'rocket-league',   title:'Rocket League',           genre:'Sports / Racing',      category:'sports',        platform:'PC',          storage:'20GB', price:0,       img:'https://upload.wikimedia.org/wikipedia/en/a/a5/Rocket_League_coverart.jpg', featured:false, inSlider:false },
+    { id:'fifa-25',         title:'EA Sports FC 25',         genre:'Sports / Football',    category:'sports',        platform:'PC',          storage:'50GB', price:3999,    img:'https://upload.wikimedia.org/wikipedia/en/8/82/EA_Sports_FC_25_Cover.jpg', featured:false, inSlider:false },
+    { id:'nba-2k25',        title:'NBA 2K25',                genre:'Sports / Basketball',  category:'sports',        platform:'PC',          storage:'150GB',price:3499,    img:'https://upload.wikimedia.org/wikipedia/en/thumb/4/4e/NBA_2K25_Cover.jpg/220px-NBA_2K25_Cover.jpg', featured:false, inSlider:false },
+    { id:'portal-2',        title:'Portal 2',                genre:'Puzzle / Adventure',   category:'puzzle',        platform:'PC',          storage:'8GB',  price:999,     img:'https://upload.wikimedia.org/wikipedia/en/f/f9/Portal2cover.jpg', featured:false, inSlider:false },
+    { id:'hollow-knight',   title:'Hollow Knight',           genre:'Metroidvania / Action',category:'puzzle',        platform:'PC',          storage:'9GB',  price:799,     img:'https://upload.wikimedia.org/wikipedia/commons/c/c5/Hollow_knight_silksong_logo.png', featured:false, inSlider:false },
+    { id:'minecraft',       title:'Minecraft',               genre:'Sandbox / Survival',   category:'simulation',    platform:'PC',          storage:'30GB', price:1499,    img:'https://upload.wikimedia.org/wikipedia/en/5/51/Minecraft_cover.png', featured:false, inSlider:false },
+    { id:'stardew-valley',  title:'Stardew Valley',          genre:'Farming / RPG',        category:'simulation',    platform:'PC',          storage:'2GB',  price:799,     img:'https://upload.wikimedia.org/wikipedia/en/f/fd/Logo_of_Stardew_Valley.png', featured:false, inSlider:false },
+    { id:'overwatch-2',     title:'Overwatch 2',             genre:'Hero Shooter',         category:'fps-shooter',   platform:'PC',          storage:'50GB', price:0,       img:'https://upload.wikimedia.org/wikipedia/en/4/4a/Overwatch2.jpg', featured:false, inSlider:false },
+];
+
+function loadGames() {
+    try {
+        const s = localStorage.getItem('gs_games');
+        return s ? JSON.parse(s) : DEFAULT_GAMES;
+    } catch(e) { return DEFAULT_GAMES; }
+}
+
+let GAMES = loadGames();
+let currentCategory = 'all';
+let currentSearch   = '';
+
+if (sessionStorage.getItem('gs_admin') === 'true') {
+    document.getElementById('adminNavBtn').style.display = '';
+}
+
+function buildCarousel() {
+    GAMES = loadGames();
+    const slides = GAMES.filter(g => g.inSlider);
+    const inner  = document.getElementById('carouselInner');
+    const indics = document.getElementById('carouselIndicators');
+    inner.innerHTML  = '';
+    indics.innerHTML = '';
+
+    if (!slides.length) {
+        const fallback = GAMES.filter(g=>g.featured).slice(0,3);
+        slides.push(...fallback);
+    }
+
+    slides.forEach((g, i) => {
+        const priceHtml = g.price === 0
+            ? `<span class="price-tag free">FREE</span>`
+            : `<span class="price-tag">₹${g.price.toLocaleString('en-IN')}</span>`;
+
+        indics.innerHTML += `<button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="${i}" ${i===0?'class="active" aria-current="true"':''}></button>`;
+        inner.innerHTML += `
+            <div class="carousel-item ${i===0?'active':''}" onclick="location.href='game-details.html?game=${g.id}'" style="cursor:pointer;">
+                <img src="${g.img}" class="d-block w-100" alt="${g.title}" onerror="imgErr(this)">
+                <div class="carousel-caption">
+                    <div class="caption-genre">${g.genre}</div>
+                    <h3>${g.title}</h3>
+                    ${priceHtml}
+                    <br>
+                    <a href="${g.price===0?'#':'payment.html?game='+encodeURIComponent(g.title)+'&price='+g.price}" class="btn-shop" onclick="event.stopPropagation();">
+                        ${g.price===0?'<i class="bi bi-download me-1"></i> Download Free':'<i class="bi bi-cart-fill me-1"></i> Buy Now'}
+                    </a>
+                </div>
+            </div>`;
+    });
+}
+
+const CAT_LABELS = {
+    all:'All Games', 'battle-royale':'Battle Royale', 'fps-shooter':'FPS / Shooter',
+    rpg:'RPG', action:'Action / Adventure', racing:'Racing', sports:'Sports',
+    puzzle:'Puzzle', simulation:'Simulation', free:'Free to Play'
+};
+
+function filterCategory(cat) {
+    currentCategory = cat;
+    currentSearch   = '';
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchDropdown').style.display = 'none';
+
+    document.querySelectorAll('.cat-tab').forEach(t => {
+        t.classList.toggle('active', t.dataset.cat === cat);
+    });
+
+    const header = document.getElementById('activeCatHeader');
+    if (cat === 'all') {
+        header.style.display = 'none';
+    } else {
+        header.style.display = '';
+        document.getElementById('activeCatTitle').innerHTML = `${CAT_LABELS[cat]||cat}`;
+    }
+
+    renderAll();
+    window.scrollTo({ top: document.getElementById('carouselWrap').offsetHeight + 80, behavior:'smooth' });
+}
+
+function getFilteredGames() {
+    GAMES = loadGames();
+    return GAMES.filter(g => {
+        let catOk;
+        if (currentCategory === 'all')  catOk = true;
+        else if (currentCategory === 'free') catOk = g.price === 0;
+        else catOk = g.category === currentCategory;
+
+        const q = currentSearch.toLowerCase();
+        const searchOk = !q || g.title.toLowerCase().includes(q) || g.genre.toLowerCase().includes(q);
+        return catOk && searchOk;
+    });
+}
+
+function renderAll() {
+    const filtered = getFilteredGames();
+    renderCards(filtered);
+    renderTable(filtered);
+    const none = currentSearch && filtered.length === 0;
+    document.getElementById('noResultsBanner').style.display = none ? 'block' : 'none';
+    if (none) document.getElementById('noResultsTerm').textContent = currentSearch;
+    document.getElementById('featured-section').style.display = filtered.filter(g=>g.featured).length===0 && currentCategory!=='all' ? 'none' : '';
+    document.getElementById('allgames-section').style.display = filtered.length === 0 ? 'none' : '';
+}
+
+function renderCards(games) {
+    const featured = games.filter(g => g.featured);
+    document.getElementById('featuredCount').textContent = featured.length;
+    document.getElementById('featuredCards').innerHTML = featured.map(g => {
+        const isFree = g.price === 0;
+        const actionBtn = isFree
+            ? `<span class="buy-btn-sm free-btn" onclick="event.preventDefault();triggerFreeDownload('${g.title}')">Download</span>`
+            : `<span class="buy-btn-sm">Buy Now</span>`;
+        return `
+        <div class="col-12 col-sm-6 col-lg-3">
+            <a href="game-details.html?game=${g.id}" class="card h-100 text-decoration-none">
+                <img src="${g.img}" class="card-img-top" alt="${g.title}" onerror="imgErr(this)">
+                <div class="card-body">
+                    <h3 class="card-title">${g.title}${isFree?` <span class="badge-free">Free</span>`:''}</h3>
+                    <div class="text-uppercase small text-secondary">${g.genre}</div>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <span class="card-price ${isFree?'free':''}">${isFree?'FREE':'₹'+g.price.toLocaleString('en-IN')}</span>
+                    ${actionBtn}
+                </div>
+            </a>
+        </div>`;
+    }).join('');
+
+    document.getElementById('featured-section').style.display = featured.length ? '' : 'none';
+}
+
+function renderTable(games) {
+    document.getElementById('allGamesCount').textContent = games.length;
+    document.getElementById('allGamesTableBody').innerHTML = games.map(g => {
+        const isFree = g.price === 0;
+        const actionCell = isFree
+            ? `<button class="dl-btn-sm" onclick="event.stopPropagation();triggerFreeDownload('${g.title}')">Download</button>`
+            : `<a href="payment.html?game=${encodeURIComponent(g.title)}&price=${g.price}" class="buy-btn-sm" onclick="event.stopPropagation()">Buy</a>`;
+        return `
+        <tr onclick="location.href='game-details.html?game=${g.id}'">
+            <td><a href="game-details.html?game=${g.id}" class="game-link">${g.title}${isFree?` <span class="badge-free">Free</span>`:''}</a></td>
+            <td>${g.genre}</td>
+            <td>${g.platform||'PC'}</td>
+            <td style="font-size:.85rem;">${g.storage||'—'}</td>
+            <td class="${isFree?'free-price fw-bold':'card-price'}">${isFree?'FREE':'₹'+g.price.toLocaleString('en-IN')}</td>
+            <td>${actionCell}</td>
+        </tr>`;
+    }).join('');
+    document.getElementById('allgames-section').style.display = games.length ? '' : 'none';
+}
+
+(function() {
+    const input    = document.getElementById('searchInput');
+    const btn      = document.getElementById('searchBtn');
+    const dropdown = document.getElementById('searchDropdown');
+
+    function highlight(text, term) {
+        if (!term) return text;
+        const re = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+        return text.replace(re, '<mark style="background:var(--accent);color:#fff;padding:0 2px;border-radius:2px;">$1</mark>');
+    }
+
+    function showDropdown(term) {
+        GAMES = loadGames();
+        const q = term.trim().toLowerCase();
+        dropdown.innerHTML = '';
+        if (!q) { dropdown.style.display='none'; return; }
+        const matches = GAMES.filter(g => g.title.toLowerCase().includes(q) || g.genre.toLowerCase().includes(q));
+        if (!matches.length) {
+            dropdown.innerHTML = '<li style="padding:12px 16px;color:var(--dim);font-size:.9rem;">No games found</li>';
+        } else {
+            matches.slice(0,8).forEach(g => {
+                const li = document.createElement('li');
+                li.style.cssText = 'padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;transition:background .15s;';
+                li.innerHTML = `
+                    <img src="${g.img}" style="width:48px;height:36px;object-fit:cover;border-radius:4px;flex-shrink:0;" alt="${g.title}" onerror="imgErr(this)">
+                    <div>
+                        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;color:var(--text);text-transform:uppercase;letter-spacing:1px;">${highlight(g.title, term.trim())}</div>
+                        <div style="font-size:.72rem;color:var(--dim);text-transform:uppercase;">${g.genre}</div>
+                    </div>
+                    <div style="margin-left:auto;font-weight:700;font-size:.85rem;color:${g.price===0?'#27ae60':'var(--accent)'};">${g.price===0?'FREE':'₹'+g.price.toLocaleString('en-IN')}</div>`;
+                li.addEventListener('mouseenter', ()=>li.style.background='#1a1f27');
+                li.addEventListener('mouseleave', ()=>li.style.background='');
+                li.addEventListener('mousedown', e=>{
+                    e.preventDefault();
+                    input.value = g.title;
+                    dropdown.style.display='none';
+                    runSearch(g.title);
+                });
+                dropdown.appendChild(li);
+            });
+        }
+        dropdown.style.display='block';
+    }
+
+    function runSearch(q) {
+        currentSearch = q.trim();
+        currentCategory = 'all';
+        document.querySelectorAll('.cat-tab').forEach(t=>t.classList.toggle('active', t.dataset.cat==='all'));
+        document.getElementById('activeCatHeader').style.display='none';
+        renderAll();
+    }
+
+    let activeIdx = -1;
+    input.addEventListener('keydown', e=>{
+        const items = dropdown.querySelectorAll('li');
+        if (e.key==='ArrowDown')  { e.preventDefault(); activeIdx=Math.min(activeIdx+1,items.length-1); }
+        else if (e.key==='ArrowUp') { e.preventDefault(); activeIdx=Math.max(activeIdx-1,0); }
+        else if (e.key==='Enter') { if (activeIdx>=0&&items[activeIdx]) items[activeIdx].dispatchEvent(new Event('mousedown')); else { dropdown.style.display='none'; runSearch(input.value); } return; }
+        else if (e.key==='Escape') { dropdown.style.display='none'; return; }
+        items.forEach((li,i)=>li.style.background=i===activeIdx?'#1a1f27':'');
+    });
+    input.addEventListener('input',    ()=>{ activeIdx=-1; showDropdown(input.value); runSearch(input.value); });
+    input.addEventListener('focus',    ()=>{ if(input.value.trim()){ showDropdown(input.value); } });
+    input.addEventListener('blur',     ()=>setTimeout(()=>dropdown.style.display='none',150));
+    btn.addEventListener('click',      ()=>{ dropdown.style.display='none'; runSearch(input.value); input.focus(); });
+})();
+
+function triggerFreeDownload(gameName) {
+    const lines = [
+        '╔══════════════════════════════════════════╗',
+        '║        GameStore – Official Installer     ║',
+        '╚══════════════════════════════════════════╝',
+        '',
+        '  Game   : ' + gameName,
+        '  Version: 1.0.0',
+        '  Date   : ' + new Date().toLocaleDateString('en-IN'),
+        '',
+        '  This is a FREE game. No payment required.',
+        '  Download and enjoy!',
+        '',
+        '══════════════════════════════════════════════',
+        '  GameStore © 2025 · All Rights Reserved',
+        '══════════════════════════════════════════════'
+    ].join('\r\n');
+    const blob = new Blob([lines], { type:'application/octet-stream' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href=url; a.download=gameName.replace(/[^a-zA-Z0-9]/g,'_')+'_Free_Setup.exe';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+
+buildCarousel();
+renderAll();
+</script>
+</body>
+</html>
